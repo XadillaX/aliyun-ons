@@ -25,3 +25,14 @@ build/Release
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
+
+aliyun-ons-client-cpp.zip
+src/third_party/example
+
+test/consumer.js
+
+*.swp
+.DS_Store
+
+build
+Release
