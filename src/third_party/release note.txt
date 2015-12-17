@@ -1,0 +1,13 @@
+1. modify include files
+	MQClientException.h -> ONSClientException.h
+	RocketMQClient.h    -> ONSClient.h
+	
+2. modify ROCKETMQCLIENT_EXPORTS definition to ONSCLIENT_EXPORTS
+   modify producer example: catch exception by ONSClientException, delete MQException.
+   
+3. fix following bugs
+	- subscribe topic with specific tag which leads accumulation consume issue
+	- fix static int out of ranges issue 
+	- clear all msgs from PullRequest if it was setted to dropped which leads consume accumulation and consume dumplication issues
+	- resolve queue out of ranges issue
+	- fix consume issue when broker connection was broken
