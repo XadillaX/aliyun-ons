@@ -16,6 +16,8 @@ $ npm install --save ons
 >
 > If you need to develop under OSX, please run a vagrant or a docker.
 >
+> And what's more, because of C++ SDK again, I only can consider every messge as successfully processed and commit `succeed` back to ONS service.
+>
 > You're welcome to provide some useful solution!
 
 ## Usage
