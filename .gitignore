@@ -30,6 +30,7 @@ aliyun-ons-client-cpp.zip
 src/third_party/example
 
 test/consumer.js
+test/producer.js
 
 *.swp
 .DS_Store
