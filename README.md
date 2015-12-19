@@ -16,6 +16,10 @@ You should turn on ONS first and then get an `access key` and a `secret key`. In
 
 You can do steps above by refering to [help desk](https://help.aliyun.com/product/8315024_ons.html) and [aliyun console](http://ons.console.aliyun.com/).
 
+### Examples
+
+Here's examples for [consumer](example/consumer.js) and [producer](example/producer.js).
+
 ### Consumer
 
 You can create a consumer by code following:
