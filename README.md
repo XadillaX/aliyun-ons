@@ -1,2 +1,95 @@
-# ons-subscriber
-Subscriber client for Alinyun ONS
+# Aliyun ONS SDK for Node.js
+
+SDK of Node.js for Alinyun ONS.
+
+> **ONS** (Open Notification Service) is a message queue service of [aliyun](http://www.aliyun.com/product/ons/) based on MetaQ (RocketMQ).
+
+## Installation
+
+```sh
+$ npm install --save ons
+```
+
+## Usage
+
+You should turn on ONS first and then get an `access key` and a `secret key`. In next step you should create a consumer id or a producer id, and a topic.
+
+You can do steps above by refering to [help desk](https://help.aliyun.com/product/8315024_ons.html) and [aliyun console](http://ons.console.aliyun.com/).
+
+### Consumer
+
+You can create a consumer by code following:
+
+```javascript
+var Consumer = require("ons").Consumer;
+var consumer = new Consumer(CUSTOMER_ID, TOPIC, TAGS, ACCESS_KEY, SECRET_KEY);
+```
+
+Next step you should set one or more message receive function to that consumer.
+
+```javascript
+consumer.on("message", function(msg) {
+    // DO SOMETHING
+    // 
+    // this function will be emitted while receiving a message
+});
+```
+
+After creating a consumer and set listener, you should initialize for it and then listen.
+
+```javascript
+consumer.init(function(err) {
+    if(err) return console.log(err);
+    consumer.listen();
+});
+```
+
+That's easy! And what's more, you can stop it when you want.
+
+```javascript
+consumer.stop();
+```
+
+### Producer
+
+You can create a producer by code following:
+
+```javascript
+var Producer = require("ons").Producer;
+var producer = new Producer(PRODUCER_ID, ACCESS_KEY, SECRET_KEY);
+```
+
+After creating a producer, you should start it.
+
+```javascript
+producer.start(function(err) {
+    if(err) return console.log(err);
+    console.log("Started!");
+});
+```
+
+Now you can send message(s)!
+
+```javascript
+producer.send(KEY, TOPIC, TAGS, CONTENT, function(err, messageId) {
+    console.log(arguments);
+});
+
+// or key is an optional parameter
+
+producer.send(TOPIC, TAGS, CONTENT, function(err, messageId) {
+    console.log(arguments);
+});
+```
+
+That's easy! And what's more, you can stop it when you want.
+
+```javascript
+producer.stop();
+```
+
+## Contribute
+
+You're welcome to fork and make pull requests!
+
+「雖然我覺得不怎麼可能有人會關注我」
