@@ -1,9 +1,9 @@
 /*
  * =====================================================================================
  *
- *       Filename:  ons.h
+ *       Filename:  consumer.h
  *
- *    Description:  ONS wrapper for node.js
+ *    Description:  ONS consumer wrapper for node.js
  *
  *        Version:  1.0
  *        Created:  2015/12/18 13时25分31秒
@@ -15,8 +15,8 @@
  *
  * =====================================================================================
  */
-#ifndef __ONS_H__
-#define __ONS_H__
+#ifndef __ONS_CONSUMER_H__
+#define __ONS_CONSUMER_H__
 #include <nan.h>
 #include <string>
 #include <uv.h>
@@ -89,7 +89,7 @@ private:
     uv_loop_t* loop;
 
 public:
-    friend class PrepareWorker;
+    friend class ConsumerPrepareWorker;
 };
 
 class ONSListenerV8 : public MessageListener {

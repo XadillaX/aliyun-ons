@@ -17,10 +17,12 @@
  */
 #include <nan.h>
 #include "consumer.h"
+#include "producer.h"
 
 void InitAll(v8::Local<v8::Object> exports)
 {
     ONSConsumerV8::Init(exports);
+    ONSProducerV8::Init(exports);
 }
 
 NODE_MODULE(ons, InitAll)

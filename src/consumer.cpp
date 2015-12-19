@@ -1,9 +1,9 @@
 /*
  * =====================================================================================
  *
- *       Filename:  ons.cpp
+ *       Filename:  consumer.cpp
  *
- *    Description:  ONS wrapper for node.js
+ *    Description:  ONS consumer wrapper for node.js
  *
  *        Version:  1.0
  *        Created:  2015/12/18 13时23分04秒
@@ -25,16 +25,16 @@ struct MessageHandlerParam
     Message* message;
 };
 
-class PrepareWorker : public Nan::AsyncWorker {
+class ConsumerPrepareWorker : public Nan::AsyncWorker {
 public:
-    PrepareWorker(Nan::Callback* callback, ONSConsumerV8& ons) :
+    ConsumerPrepareWorker(Nan::Callback* callback, ONSConsumerV8& ons) :
         AsyncWorker(callback),
         ons(ons),
         factory_info(ons.factory_info)
     {
     }
 
-    ~PrepareWorker() {}
+    ~ConsumerPrepareWorker() {}
 
     void Execute()
     {
@@ -178,7 +178,7 @@ void ONSConsumerV8::Prepare(const Nan::FunctionCallbackInfo<v8::Value>& info)
     }
 
     ons->initializing = true;
-    AsyncQueueWorker(new PrepareWorker(cb, *ons));
+    AsyncQueueWorker(new ConsumerPrepareWorker(cb, *ons));
 }
 
 void ONSConsumerV8::Listen(const Nan::FunctionCallbackInfo<v8::Value>& info)
