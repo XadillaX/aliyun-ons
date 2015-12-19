@@ -8,6 +8,13 @@
 $ npm install --save ons
 ```
 
+> **注意:** 因为阿里云 ONS 的官方 C++ SDK 是闭源的，且只提供了 Linux 下的静态链接库（libonsclient4cpp.a），所以该包目前为止只支持在 Linux 下安装。
+>
+> 如需开发环境，OSX 用户请移步 Linux 或者启动一个 Vagrant、Docker 等。
+>
+> 欢迎提供解决方案以及优化。
+
+
 ## 使用方法
 
 首先你需要开通 ONS 服务并且获取 `access key` 以及 `secret key`，然后创建一个消费者 ID 或者生产者 ID，还有就是话题（topic）。

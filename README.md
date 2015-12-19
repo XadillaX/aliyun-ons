@@ -3,7 +3,6 @@
 SDK of Node.js for Aliyun ONS.
 
 > **ONS** (Open Notification Service) is a message queue service of [aliyun](http://www.aliyun.com/product/ons/) based on MetaQ (RocketMQ).
-
 > Maybe you want [中文文档](README-zh_cn.md)?
 
 ## Installation
@@ -11,6 +10,12 @@ SDK of Node.js for Aliyun ONS.
 ```sh
 $ npm install --save ons
 ```
+
+> **NOTE:** Because of Aliyun ONS C++ SDK's closed source, it only provides linux static library file (libonsclient4cpp.a). So you can only install this package under linux so far.
+>
+> If you need to develop under OSX, please run a vagrant or a docker.
+>
+> You're welcome to provide some useful solution!
 
 ## Usage
 
