@@ -12,9 +12,7 @@
   },
   "keywords": [
     "ONS",
-    "Aliyun",
-    "Message",
-    "Queue"
+    "Aliyun Message Queue"
   ],
   "author": "XadillaX <i@2333.moe>",
   "license": "MIT",
