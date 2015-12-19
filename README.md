@@ -4,6 +4,8 @@ SDK of Node.js for Alinyun ONS.
 
 > **ONS** (Open Notification Service) is a message queue service of [aliyun](http://www.aliyun.com/product/ons/) based on MetaQ (RocketMQ).
 
+> Maybe you want [中文文档](README-zh_cn.md)?
+
 ## Installation
 
 ```sh
