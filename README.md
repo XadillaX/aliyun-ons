@@ -1,6 +1,6 @@
 # Aliyun ONS SDK for Node.js
 
-SDK of Node.js for Alinyun ONS.
+SDK of Node.js for Aliyun ONS.
 
 > **ONS** (Open Notification Service) is a message queue service of [aliyun](http://www.aliyun.com/product/ons/) based on MetaQ (RocketMQ).
 
