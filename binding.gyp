@@ -4,7 +4,8 @@
             "target_name": "ons",
             "sources": [
                 "src/entry.cpp",
-                "src/consumer.cpp"
+                "src/consumer.cpp",
+                "src/producer.cpp"
             ],
             "include_dirs": [
                 "src/third_party/include",
