@@ -16,6 +16,10 @@
  * =====================================================================================
  */
 #include "consumer.h"
+#include "consumer_ack.h"
+
+std::string consumer_env_v = std::getenv("NODE_ONS_LOG") == NULL ?
+        "" : std::getenv("NODE_ONS_LOG");
 
 Nan::Persistent<v8::Function> ONSConsumerV8::constructor;
 
@@ -23,6 +27,7 @@ struct MessageHandlerParam
 {
     ONSConsumerV8* ons;
     Message* message;
+    ONSConsumerACKInner* ack_inner;
 };
 
 class ConsumerPrepareWorker : public Nan::AsyncWorker {
@@ -246,6 +251,16 @@ void ONSConsumerV8::HandleMessage(uv_async_t* handle)
 
     Message* message = param->message;
     ONSConsumerV8* ons = param->ons;
+    ONSConsumerACKInner* ack_inner = param->ack_inner;
+    ONSConsumerACKV8* ack = new ONSConsumerACKV8();
+    ack->SetInner(ack_inner);
+
+    // create ack object
+    v8::Local<v8::ObjectTemplate> ack_templ = Nan::New<v8::ObjectTemplate>();
+    ack_templ->SetInternalFieldCount(1);
+    Nan::SetMethod<v8::Local<v8::ObjectTemplate>>(ack_templ, "done", ONSConsumerACKV8::Done);
+    v8::Local<v8::Object> ack_obj = ack_templ->NewInstance();
+    ack->Wrap(ack_obj);
 
     v8::Local<v8::Object> result = Nan::New<v8::Object>();
     result->Set(
@@ -270,9 +285,9 @@ void ONSConsumerV8::HandleMessage(uv_async_t* handle)
             Nan::New<v8::String>("reconsumeTimes").ToLocalChecked(),
             Nan::New<v8::Number>(message->getReconsumeTimes()));
 
-    v8::Local<v8::Value> argv[2] = { Nan::Undefined(), result };
+    v8::Local<v8::Value> argv[3] = { Nan::Undefined(), result, ack_obj };
     Nan::Callback* callback = ons->GetListenerFunc();
-    callback->Call(2, argv);
+    callback->Call(3, argv);
 
     delete param->message;
     delete param;
@@ -280,12 +295,20 @@ void ONSConsumerV8::HandleMessage(uv_async_t* handle)
 
 Action ONSListenerV8::consume(Message message, ConsumeContext context)
 {
+    ONSConsumerACKInner* ack_inner = new ONSConsumerACKInner();
+
+    if(consumer_env_v == "true") printf(">>> Inner Created: 0x%X\n", ack_inner);
     Message* m = new Message(message);
     MessageHandlerParam* param = new MessageHandlerParam();
     param->message = m;
     param->ons = parent;
+    param->ack_inner = ack_inner;
     async->data = (void*)param;
     uv_async_send(async);
 
-    return CommitMessage;
+    Action result = ack_inner->WaitResult();
+    delete ack_inner;
+    if(consumer_env_v == "true") printf(">>> ACK Deleted: 0x%X\n", ack_inner);
+
+    return result;
 }

@@ -92,7 +92,7 @@ public:
         {
             send_result = real_producer->send(msg);
         }
-        catch(ONSClientException& e)
+        catch(const ONSClientException& e)
         {
             error_msg = e.GetMsg();
             errored = true;
