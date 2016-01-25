@@ -15,8 +15,12 @@ var consumer = new Consumer(
     "access_key",
     "secret_key");
 
-consumer.on("message", function(message) {
+consumer.on("message", function(message, ack) {
     console.log(message);
+
+    setTimeout(function() {
+        ack.done(Math.random() > 0.5);
+    }, 1000);
 });
 
 console.log("Connecting to Aliyun ONS...");
