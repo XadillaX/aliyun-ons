@@ -12,7 +12,7 @@ $ npm install --save ons
 >
 > 如需开发环境，OSX 用户请移步 Linux 或者启动一个 Vagrant、Docker 等。
 >
-> 还有一点，由于 C++ SDK 在线程中同步执行需要反馈处理结果，而 Node.js 需要异步执行，所以没法及时反馈结果，本包只能默许所有消息都成功处理，即 ACK 成功状态。
+> ~~还有一点，由于 C++ SDK 在线程中同步执行需要反馈处理结果，而 Node.js 需要异步执行，所以没法及时反馈结果，本包只能默许所有消息都成功处理，即 ACK 成功状态。~~（**ACK 成功失败特性已编码完成！**）
 >
 > 欢迎提供解决方案以及优化。
 
@@ -39,10 +39,15 @@ var consumer = new Consumer(CUSTOMER_ID, TOPIC, TAGS, ACCESS_KEY, SECRET_KEY);
 然后创建一个获取消息的事件监听。
 
 ```javascript
-consumer.on("message", function(msg) {
+consumer.on("message", function(msg, ack) {
     // 做一些事情
     // 
     // 该函数会在收到消息之后被触发。
+    //
+    // 在你做完事情之后别忘了调用 `ack.done(true)` 或是 `ack.done(false)`
+    // 来告诉 ONS 你已处理消息成功或者失败，若失败则 ONS 会重试
+    //
+    // `ack.done()` 等价于 `ack.done(true)`
 });
 ```
 
