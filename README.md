@@ -16,7 +16,7 @@ $ npm install --save ons
 >
 > If you need to develop under OSX, please run a vagrant or a docker.
 >
-> And what's more, because of C++ SDK again, I only can consider every messge as successfully processed and commit `succeed` back to ONS service.
+> ~~And what's more, because of C++ SDK again, I only can consider every messge as successfully processed and commit `succeed` back to ONS service.~~ (**ACK is finished!**)
 >
 > You're welcome to provide some useful solution!
 
@@ -42,10 +42,15 @@ var consumer = new Consumer(CUSTOMER_ID, TOPIC, TAGS, ACCESS_KEY, SECRET_KEY);
 Next step you should set one or more message receive function to that consumer.
 
 ```javascript
-consumer.on("message", function(msg) {
+consumer.on("message", function(msg, ack) {
     // DO SOMETHING
     // 
     // this function will be emitted while receiving a message
+    //
+    // after finishing this, call `ack.done(true)` or `ack.done(false)` to tell
+    // ONS whether you're successful.
+    //
+    // `ack.done()` equals to `ack.done(true)`
 });
 ```
 
