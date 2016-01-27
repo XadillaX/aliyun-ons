@@ -1,0 +1,4 @@
+*.docx
+src/third_party/*.txt
+src/third_party/example
+src/third_party/lib/*.so
