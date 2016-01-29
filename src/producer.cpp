@@ -131,8 +131,8 @@ private:
     string content;
 
     SendResultONS send_result;
-    string error_msg;
     bool errored;
+    string error_msg;
 };
 
 ONSProducerV8::ONSProducerV8(string _producer_id, string _access_key, string _secret_key) :

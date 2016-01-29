@@ -44,7 +44,7 @@ public:
     void Ack(Action result = Action::CommitMessage)
     {
         ack_result = result;
-        if(ack_env_v == "true") printf(">>>>> ACKed: 0x%X\n", this);
+        if(ack_env_v == "true") printf(">>>>> ACKed: 0x%lX\n", (unsigned long)this);
 
         uv_mutex_lock(&mutex);
         uv_cond_signal(&cond);
@@ -58,7 +58,7 @@ public:
         uv_mutex_unlock(&mutex);
 
         Action result = ack_result;
-        if(ack_env_v == "true") printf(">>>>> Finish Wait: 0x%X\n", this);
+        if(ack_env_v == "true") printf(">>>>> Finish Wait: 0x%lX\n", (unsigned long)this);
 
         return result;
     }
@@ -92,7 +92,7 @@ public:
         if(inner)
         {
             inner->Ack(result);
-            if(ack_env_v == "true") printf(">>> Inner unrefed: 0x%X\n", inner);
+            if(ack_env_v == "true") printf(">>> Inner unrefed: 0x%lX\n", (unsigned long)inner);
             inner = NULL;
         }
     }

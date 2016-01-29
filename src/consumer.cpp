@@ -297,7 +297,7 @@ Action ONSListenerV8::consume(Message message, ConsumeContext context)
 {
     ONSConsumerACKInner* ack_inner = new ONSConsumerACKInner();
 
-    if(consumer_env_v == "true") printf(">>> Inner Created: 0x%X\n", ack_inner);
+    if(consumer_env_v == "true") printf(">>> Inner Created: 0x%lX\n", (unsigned long)ack_inner);
     Message* m = new Message(message);
     MessageHandlerParam* param = new MessageHandlerParam();
     param->message = m;
@@ -308,7 +308,7 @@ Action ONSListenerV8::consume(Message message, ConsumeContext context)
 
     Action result = ack_inner->WaitResult();
     delete ack_inner;
-    if(consumer_env_v == "true") printf(">>> ACK Deleted: 0x%X\n", ack_inner);
+    if(consumer_env_v == "true") printf(">>> ACK Deleted: 0x%lX\n", (unsigned long)ack_inner);
 
     return result;
 }
