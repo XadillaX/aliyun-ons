@@ -205,6 +205,8 @@ void ONSProducerV8::New(const Nan::FunctionCallbackInfo<v8::Value>& info)
 
 void ONSProducerV8::Start(const Nan::FunctionCallbackInfo<v8::Value>& info)
 {
+    Nan::HandleScope scope;
+
     ONSProducerV8* ons = ObjectWrap::Unwrap<ONSProducerV8>(info.Holder());
     Nan::Callback* cb = new Nan::Callback(info[0].As<v8::Function>());
 
@@ -242,6 +244,8 @@ void ONSProducerV8::Stop(const Nan::FunctionCallbackInfo<v8::Value>& info)
 
 void ONSProducerV8::Send(const Nan::FunctionCallbackInfo<v8::Value>& info)
 {
+    Nan::HandleScope scope;
+
     ONSProducerV8* ons = ObjectWrap::Unwrap<ONSProducerV8>(info.Holder());
 
     Nan::Callback* cb = new Nan::Callback(info[4].As<v8::Function>());
