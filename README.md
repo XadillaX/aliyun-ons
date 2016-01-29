@@ -16,6 +16,8 @@ $ npm install --save ons
 >
 > If you need to develop under OSX, please run a vagrant or a docker.
 >
+> **Microsoft Windows is supported now since version 1.2.0!**
+>
 > ~~And what's more, because of C++ SDK again, I only can consider every messge as successfully processed and commit `succeed` back to ONS service.~~ (**ACK feature is finished!**)
 >
 > You're welcome to provide some useful solution!
