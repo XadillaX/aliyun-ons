@@ -79,10 +79,10 @@ public:
 
     void Execute()
     {
-        Message msg(topic, tags, content);
+        Message msg(topic.c_str(), tags.c_str(), content.c_str());
         if(key != "")
         {
-            msg.setKey(key);
+            msg.setKey(key.c_str());
         }
 
         uv_mutex_lock(&ons.mutex);
