@@ -62,13 +62,15 @@ public:
             string _topic,
             string _tags,
             string _key,
-            string _content) :
+            string _content,
+            int64_t _send_at) :
         AsyncWorker(callback),
         ons(_ons),
         topic(_topic),
         tags(_tags),
         key(_key),
         content(_content),
+        send_at(_send_at),
 
         errored(false),
         error_msg("")
@@ -83,6 +85,12 @@ public:
         if(key != "")
         {
             msg.setKey(key.c_str());
+        }
+        
+        // delay...
+        if(send_at != -1)
+        {
+            msg.setStartDeliverTime(send_at);
         }
 
         uv_mutex_lock(&ons.mutex);
@@ -129,6 +137,8 @@ private:
     string tags;
     string key;
     string content;
+    
+    int64_t send_at;
 
     SendResultONS send_result;
     bool errored;
@@ -248,7 +258,7 @@ void ONSProducerV8::Send(const Nan::FunctionCallbackInfo<v8::Value>& info)
 
     ONSProducerV8* ons = ObjectWrap::Unwrap<ONSProducerV8>(info.Holder());
 
-    Nan::Callback* cb = new Nan::Callback(info[4].As<v8::Function>());
+    Nan::Callback* cb = new Nan::Callback(info[5].As<v8::Function>());
 
     if(!ons->inited || !ons->started)
     {
@@ -264,8 +274,9 @@ void ONSProducerV8::Send(const Nan::FunctionCallbackInfo<v8::Value>& info)
     v8::String::Utf8Value v8_tags(info[1]->ToString());
     v8::String::Utf8Value v8_key(info[2]->ToString());
     v8::String::Utf8Value v8_content(info[3]->ToString());
+    int64_t send_at = info[4]->IntegerValue();
 
-    AsyncQueueWorker(new ProducerSendWorker(cb, *ons, *v8_topic, *v8_tags, *v8_key, *v8_content));
+    AsyncQueueWorker(new ProducerSendWorker(cb, *ons, *v8_topic, *v8_tags, *v8_key, *v8_content, send_at));
 }
 
 void ONSProducerV8::Stop()
