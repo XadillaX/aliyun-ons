@@ -14,7 +14,7 @@ $ npm install --save ons
 ```
 If you login with root, run
 ```sh
-$ npm install --save ons
+$ npm install --save ons --unsafe-perm
 ```
 
 
