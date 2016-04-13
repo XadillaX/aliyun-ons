@@ -10,7 +10,7 @@ $ npm install --save ons
 ```
 如果你是用root用户登录linux系统，运行
 ```sh
-$ npm install --save ons
+$ npm install --save ons --unsafe-perm
 ```
 
 
