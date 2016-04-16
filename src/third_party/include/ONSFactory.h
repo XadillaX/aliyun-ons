@@ -2,12 +2,13 @@
 #define __ONSFACTORY_H_
 
 #include "Producer.h"
+#include "TransactionProducer.h"
 //#include "PullConsumer.h"
 #include "PushConsumer.h"
 #include "ONSChannel.h"
+#include "LocalTransactionChecker.h"
 
 namespace ons {
-
 class ONSCLIENT_API ONSFactoryProperty{
 public:
     ONSFactoryProperty();
@@ -56,7 +57,7 @@ public:
     virtual ~ONSFactoryAPI();
 
     virtual Producer*     createProducer(ONSFactoryProperty factoryProperty);
-    //virtual PullConsumer* createPullConsumer(ONSFactoryProperty factoryProperty);
+    virtual TransactionProducer* createTransactionProducer(ONSFactoryProperty factoryProperty, LocalTransactionChecker *checker);
     virtual PushConsumer* createPushConsumer(ONSFactoryProperty factoryProperty);
 };
 

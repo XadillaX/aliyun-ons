@@ -13,7 +13,7 @@ public:
     virtual ~MessageListener(){}
     
     //interface of consuming message, should be realized by application
-    virtual Action consume(Message message, ConsumeContext context) = 0;
+    virtual Action consume(Message& message, ConsumeContext& context) = 0;
 };
 
 }

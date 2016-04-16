@@ -5,7 +5,6 @@
 #include <vector>
 #include <sstream>
 #include "ONSClient.h"
-
 namespace ons {
 
     class ONSCLIENT_API SystemPropKey
@@ -57,15 +56,18 @@ namespace ons {
         CONSTSTRING getMsgID() const;
         void   setMsgID(CONSTSTRING msgId);
     
-        const long   getStartDeliverTime() const;
-        void   setStartDeliverTime(long level);
+        const long long  getStartDeliverTime() const;
+        void   setStartDeliverTime(long long level);
     
         CONSTSTRING getBody()const;
         void   setBody(CONSTSTRING msgbody);
     
         const int    getReconsumeTimes() const;
         void  setReconsumeTimes(int reconsumeTimes);
-        
+
+        long long getStoreTimestamp() const;
+        void setStoreTimestamp(long long storeTimestamp);
+    
         const std::string toString() const;
 
         const std::string toSystemString() const;
@@ -82,6 +84,7 @@ namespace ons {
     private:
         std::string  topic;
         std::string  body;
+         long long m_storeTimestamp;
         std::map<std::string, std::string> systemProperties;
         std::map<std::string, std::string> userProperties;
     };

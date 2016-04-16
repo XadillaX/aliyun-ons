@@ -22,8 +22,6 @@ public:
     //retry max 3 times if send failed. if no exception throwed, it sends success; 
     virtual SendResultONS send(Message& msg)=0;
 
-    //virtual void setSendMsgTimeout(int value) = 0;
-    //virtual void setNamesrvAddr(const std::string& nameSrvAddr) = 0;
 };
 
 }
