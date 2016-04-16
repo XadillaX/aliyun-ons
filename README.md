@@ -92,11 +92,11 @@ producer.start(function(err) {
 Now you can send message(s)!
 
 ```javascript
-producer.send(KEY, TOPIC, TAGS, CONTENT, function(err, messageId) {
+producer.send(KEY, TOPIC, TAGS, CONTENT, DELAY, function(err, messageId) {
     console.log(arguments);
 });
 
-// or key is an optional parameter
+// or key / delay (ms) is an optional parameter
 
 producer.send(TOPIC, TAGS, CONTENT, function(err, messageId) {
     console.log(arguments);

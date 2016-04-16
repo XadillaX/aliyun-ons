@@ -89,11 +89,12 @@ producer.start(function(err) {
 然后你就可以通过 `send` 函数来发消息了。
 
 ```javascript
-producer.send(KEY, TOPIC, TAGS, CONTENT, function(err, messageId) {
+producer.send(KEY, TOPIC, TAGS, CONTENT, DELAY, function(err, messageId) {
     console.log(arguments);
 });
 
 // `KEY` 参数并不是必选的，所以也可以如下调用
+// `DELAY` 延时参数也是可选的，默认不传为立即发送，否则会发一个指定毫秒延时的消息
 
 producer.send(TOPIC, TAGS, CONTENT, function(err, messageId) {
     console.log(arguments);
