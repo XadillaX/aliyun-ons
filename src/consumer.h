@@ -103,7 +103,7 @@ public:
     virtual ~ONSListenerV8()
     {
     }
-    virtual Action consume(Message message, ConsumeContext context);
+    virtual Action consume(Message& message, ConsumeContext& context);
 
 private:
     ONSConsumerV8* parent;

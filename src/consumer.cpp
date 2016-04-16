@@ -293,7 +293,7 @@ void ONSConsumerV8::HandleMessage(uv_async_t* handle)
     delete param;
 }
 
-Action ONSListenerV8::consume(Message message, ConsumeContext context)
+Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
 {
     ONSConsumerACKInner* ack_inner = new ONSConsumerACKInner();
 
