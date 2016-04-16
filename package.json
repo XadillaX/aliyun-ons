@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/XadillaX/aliyun-ons#readme",
   "dependencies": {
-    "nan": "^2.2.0"
+    "nan": "^2.2.1"
   }
 }
