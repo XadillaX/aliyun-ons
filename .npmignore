@@ -1,7 +1,8 @@
 *.docx
 src/third_party/*.txt
 src/third_party/example
-src/third_party/lib/*.so
-aliyun-ons-client-cpp.zip
 Release
 .project
+.ropeproject
+.DS_Store
+test/

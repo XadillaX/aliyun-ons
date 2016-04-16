@@ -17,7 +17,7 @@
             "conditions": [
                 ["OS==\"linux\"", {
                     "libraries": [
-                        "../src/third_party/lib/libonsclient4cpp.a"
+                        "../src/third_party/lib/linux/libonsclient4cpp.a"
                     ],
                     "cflags_cc!": [ "-fno-exceptions", "-pthread", "-Wl,--no-as-needed", "-ldl" ],
                     "cflags_cc": [ "-Wno-ignored-qualifiers" ]
