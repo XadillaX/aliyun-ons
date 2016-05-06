@@ -6,3 +6,4 @@ Release
 .ropeproject
 .DS_Store
 test/
+build
