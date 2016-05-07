@@ -32,6 +32,8 @@ src/third_party/example
 test/consumer.js
 test/producer.js
 
+*.pyc
+
 *.swp
 .DS_Store
 
