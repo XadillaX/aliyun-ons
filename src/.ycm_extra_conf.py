@@ -45,11 +45,11 @@ flags = [
     'xctoolchain/usr/lib/clang/6.1.0/include',
 
     # Node.js include
-    '-I', '/Users/xadillax/.nvm/versions/io.js/v2.5.0/include/node',
+    '-I', '/Users/xadillax/.nvm/versions/node/v4.2.1/include/node',
 
     # NAN
     '-I',
-    '/Users/xadillax/.nvm/versions/io.js/v2.5.0/lib/node_modules/nan',
+    '/Users/xadillax/.nvm/versions/node/v4.2.1/lib/node_modules/nan',
 
     # ONS
     '-I',
