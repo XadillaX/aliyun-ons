@@ -37,6 +37,7 @@ void ONSConsumerACKV8::Done(const Nan::FunctionCallbackInfo<v8::Value>& info)
         succ = info[0]->ToBoolean()->Value();
     }
 
+    //printf("Done: %d\n", succ);
     Action act = succ ? Action::CommitMessage : Action::ReconsumeLater;
     ack->Ack(act);
 }

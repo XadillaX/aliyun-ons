@@ -258,7 +258,8 @@ void ONSConsumerV8::HandleMessage(uv_async_t* handle)
     // create ack object
     v8::Local<v8::ObjectTemplate> ack_templ = Nan::New<v8::ObjectTemplate>();
     ack_templ->SetInternalFieldCount(1);
-    Nan::SetMethod<v8::Local<v8::ObjectTemplate>>(ack_templ, "done", ONSConsumerACKV8::Done);
+    //Nan::SetMethod<v8::Local<v8::ObjectTemplate>>(ack_templ, "done", ONSConsumerACKV8::Done);
+    Nan::SetMethod(ack_templ, "done", ONSConsumerACKV8::Done);
     v8::Local<v8::Object> ack_obj = ack_templ->NewInstance();
     ack->Wrap(ack_obj);
 
