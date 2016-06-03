@@ -102,7 +102,9 @@ public:
         }
         catch(const ONSClientException& e)
         {
+#ifndef __APPLE__
             error_msg = e.GetMsg();
+#endif
             errored = true;
             uv_mutex_unlock(&ons.mutex);
             return;
