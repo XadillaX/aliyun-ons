@@ -19,3 +19,25 @@ try {
         topic: env.ONS_TOPIC
     };
 }
+
+let version = process.versions.node;
+let suffixes = {
+    "4": "4",
+    "6": "6",
+    "0.10": "010",
+    "0.12": "012"
+};
+
+const version = process.versions.node;
+let suffix;
+for(let key in suffixes) {
+    if(!suffixes.hasOwnProperty(key)) continue;
+    if(version.indexOf(key) === 0) {
+        suffix = suffixes[key];
+        break;
+    }
+}
+
+module.exports.producerId += suffix;
+module.exports.consumerId += suffix;
+module.topic += suffix;

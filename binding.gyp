@@ -15,7 +15,7 @@
             ],
 
             "conditions": [
-                ["OS==\"max\"", {
+                ["OS==\"mac\"", {
                     "cflags_cc!": [ "-fno-exceptions", "-pthread", "-Wl,--no-as-needed", "-ldl" ],
                     "cflags_cc": [ "-Wno-ignored-qualifiers" ]
                 }],
@@ -24,7 +24,8 @@
                         "../src/third_party/lib/linux/libonsclient4cpp.a"
                     ],
                     "cflags_cc!": [ "-fno-exceptions", "-pthread", "-Wl,--no-as-needed", "-ldl" ],
-                    "cflags_cc": [ "-Wno-ignored-qualifiers" ]
+                    "cflags_cc": [ "-Wno-ignored-qualifiers" ],
+                    "cflags": [ "-std=c++0x" ]
                 }],
                 ["OS==\"win\"", {
                     "conditions": [
