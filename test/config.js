@@ -9,7 +9,7 @@
 try {
     module.exports = require("./_config");
 } catch(e) {
-    const env = process.env;
+    var env = process.env;
     
     module.exports = {
         accessKey: env.ONS_KEY,
@@ -20,16 +20,16 @@ try {
     };
 }
 
-let version = process.versions.node;
-let suffixes = {
+var version = process.versions.node;
+var suffixes = {
     "4": "4",
     "6": "6",
     "0.10": "010",
     "0.12": "012"
 };
 
-let suffix;
-for(let key in suffixes) {
+var suffix;
+for(var key in suffixes) {
     if(!suffixes.hasOwnProperty(key)) continue;
     if(version.indexOf(key) === 0) {
         suffix = suffixes[key];

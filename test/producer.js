@@ -6,14 +6,14 @@
  */
 "use strict";
 
-const should = require("should");
+var should = require("should");
 
-const config = require("./config");
-const Producer = require("../").Producer;
+var config = require("./config");
+var Producer = require("../").Producer;
 
 describe("#producer", function() {
-    const producer = new Producer(config.producerId, config.accessKey, config.secretKey);
-    const date = new Date();
+    var producer = new Producer(config.producerId, config.accessKey, config.secretKey);
+    var date = new Date();
 
     this.timeout(0);
 

@@ -1,6 +1,5 @@
 language: node_js
 node_js:
-    - "0.10"
     - "0.12"
     - "4"
     - "6"
@@ -15,4 +14,3 @@ addons:
             - gcc-4.8
             - g++-4.8
             - clang
-
