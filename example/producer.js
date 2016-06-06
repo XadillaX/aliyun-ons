@@ -19,7 +19,7 @@ producer.start(function() {
 
     setInterval(function() {
         for(var i = 0; i < 10; i++) {
-            producer.send("ons_subscriber_test", "tagA", "Hello " + i + "!", 86400 * 1000, function(err, messageId) {
+            producer.send("ons_subscriber_test", "tagA", "Hello " + i + "!", 1000, function(err, messageId) {
                 console.log(err, messageId);
             }); /* jshint ignore: line */
         }
