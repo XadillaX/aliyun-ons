@@ -15,8 +15,9 @@ describe("#producer", function() {
     const producer = new Producer(config.producerId, config.accessKey, config.secretKey);
     const date = new Date();
 
+    this.timeout(0);
+
     it("should start producer", function(done) {
-        this.timeout(0);
         producer.start(done);
     });
 
@@ -45,7 +46,6 @@ describe("#producer", function() {
     });
 
     it("should stop producer", function(done) {
-        this.timeout(0);
         producer.stop();
         done();
     });
