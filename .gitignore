@@ -43,3 +43,5 @@ Release
 .ropeproject
 .project
 note.txt
+
+test/_config.js

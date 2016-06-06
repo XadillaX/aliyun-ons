@@ -7,3 +7,4 @@ Release
 .DS_Store
 test/
 build
+test/_config.js

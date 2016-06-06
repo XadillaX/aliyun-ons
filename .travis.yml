@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+    - "0.10"
+    - "0.12"
+    - "4"
+    - "6"
+install:
+    - export CXX="g++-4.8" CXX="gcc-4.8"
+    - npm install
+addons:
+    apt:
+        sources:
+            - ubuntu-toolchain-r-test
+        packages:
+            - gcc-4.8
+            - g++-4.8
+            - clang
+
