@@ -28,7 +28,6 @@ let suffixes = {
     "0.12": "012"
 };
 
-const version = process.versions.node;
 let suffix;
 for(let key in suffixes) {
     if(!suffixes.hasOwnProperty(key)) continue;
