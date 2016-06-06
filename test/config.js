@@ -9,7 +9,6 @@
 try {
     module.exports = require("./_config");
 } catch(e) {
-    console.log(e);
     const env = process.env;
     
     module.exports = {

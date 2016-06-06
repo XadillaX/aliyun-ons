@@ -45,6 +45,7 @@ describe("#producer", function() {
     });
 
     it("should stop producer", function(done) {
+        this.timeout(0);
         producer.stop();
         done();
     });
