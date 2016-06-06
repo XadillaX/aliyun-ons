@@ -25,7 +25,7 @@ describe("#producer", function() {
         producer.send(
             config.topic,
             "tagA",
-            `Hello ${date.getUTCFullYear()}${date.getUTCMonth()}${date.getUTCDate()}`,
+            "Hello " + date.getUTCFullYear() + date.getUTCMonth() + date.getUTCDate(),
             function(err, id) {
                 should.ifError(err);
                 id.should.match(/^[0-9A-Z]{32}$/);
@@ -37,7 +37,7 @@ describe("#producer", function() {
         producer.send(
             config.topic,
             "tagA",
-            `World ${date.getUTCFullYear()}${date.getUTCMonth()}${date.getUTCDate()}`,
+            "World " + date.getUTCFullYear() + date.getUTCMonth() + date.getUTCDate(),
             function(err, id) {
                 should.ifError(err);
                 id.should.match(/^[0-9A-Z]{32}$/);
