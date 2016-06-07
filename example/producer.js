@@ -6,12 +6,13 @@
  */
 "use strict";
 
+var config = require("../test/_config");
 var Producer = require("../lib/producer");
 
 var producer = new Producer(
-    "PID",
-    "access_key",
-    "secret_key");
+    config.producerId,
+    config.accessKey,
+    config.secretKey);
 
 console.log("Connecting to Aliyun ONS...");
 producer.start(function() {
@@ -19,7 +20,7 @@ producer.start(function() {
 
     setInterval(function() {
         for(var i = 0; i < 10; i++) {
-            producer.send("ons_subscriber_test", "tagA", "Hello " + i + "!", 1000, function(err, messageId) {
+            producer.send(config.topic, "tagA", "Hello " + i + "!", 1000, function(err, messageId) {
                 console.log(err, messageId);
             }); /* jshint ignore: line */
         }
