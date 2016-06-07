@@ -14,15 +14,15 @@ var Consumer = require("../").Consumer;
 describe("#consumer", function() {
     var consumer = new Consumer(config.consumerId, config.topic, "*", config.accessKey, config.secretKey);
     var date = new Date();
-    var DATE = date.getUTCFullYear() + date.getUTCMonth() + date.getUTCDate();
-    var _ack = null;
-    var _message = null;
+    var DATE = "" + date.getUTCFullYear() + date.getUTCMonth() + date.getUTCDate();
+    var ack = [];
+    var message = [];
 
     this.timeout(0);
 
-    function listener(message, ack) {
-        _message = message;
-        _ack = ack;
+    function listener(_message, _ack) {
+        message.push(_message);
+        ack.push(_ack);
     }
 
     it("should start consumer", function(done) {
@@ -34,14 +34,13 @@ describe("#consumer", function() {
     });
 
     it("should get one message", function(done) {
-        // consumer.once("message", function(message, ack) {
-        //     
-
-        //     _ack = ack;
-        //     done();
-        // });
         function verify() {
-            if(_ack === null) return setTimeout(verify, 500);
+            if(ack.length < 1) return setTimeout(verify, 500);
+
+            var _message = message[0];
+            var _ack = ack[0];
+
+            _ack.done(false);
 
             _message.topic.should.be.eql(config.topic);
             _message.tag.should.be.eql("tagA");
@@ -49,10 +48,7 @@ describe("#consumer", function() {
             _message.msgId.should.match(/^[0-9A-Z]{32}$/);
             _message.body.should.be.eql("Hello " + DATE);
             _message.reconsumeTimes.should.be.eql(0);
-
-            _message = null;
-            _ack.ack(false);
-            _ack = null;
+            _message.startDeliverTime.should.be.eql(0);
 
             done();
         }
@@ -62,7 +58,12 @@ describe("#consumer", function() {
 
     it("should get another message", function(done) {
         function verify() {
-            if(_ack === null) return setTimeout(verify, 500);
+            if(ack.length < 2) return setTimeout(verify, 500);
+
+            var _message = message[1];
+            var _ack = ack[1];
+
+            _ack.done(true);
 
             _message.topic.should.be.eql(config.topic);
             _message.tag.should.be.eql("tagA");
@@ -70,10 +71,7 @@ describe("#consumer", function() {
             _message.msgId.should.match(/^[0-9A-Z]{32}$/);
             _message.body.should.be.eql("World " + DATE);
             _message.reconsumeTimes.should.be.eql(0);
-
-            _message = null;
-            _ack.ack(true);
-            _ack = null;
+            _message.startDeliverTime.should.not.be.eql(0);
 
             done();
         }
@@ -83,7 +81,12 @@ describe("#consumer", function() {
 
     it("should reconsume", function(done) {
         function verify() {
-            if(_ack === null) return setTimeout(verify, 500);
+            if(ack.length < 3) return setTimeout(verify, 500);
+
+            var _message = message[2];
+            var _ack = ack[2];
+
+            _ack.done();
 
             _message.topic.should.be.eql(config.topic);
             _message.tag.should.be.eql("tagA");
@@ -91,8 +94,7 @@ describe("#consumer", function() {
             _message.msgId.should.match(/^[0-9A-Z]{32}$/);
             _message.body.should.be.eql("Hello " + DATE);
             _message.reconsumeTimes.should.be.eql(1);
-
-            _ack.done(true);
+            _message.startDeliverTime.should.be.eql(0);
 
             done();
         }

@@ -19,24 +19,3 @@ try {
         topic: env.ONS_TOPIC
     };
 }
-
-var version = process.versions.node;
-var suffixes = {
-    "4": "4",
-    "6": "6",
-    "0.10": "010",
-    "0.12": "012"
-};
-
-var suffix;
-for(var key in suffixes) {
-    if(!suffixes.hasOwnProperty(key)) continue;
-    if(version.indexOf(key) === 0) {
-        suffix = suffixes[key];
-        break;
-    }
-}
-
-module.exports.producerId += suffix;
-module.exports.consumerId += suffix;
-module.topic += suffix;
