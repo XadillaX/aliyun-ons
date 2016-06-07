@@ -1,5 +1,12 @@
 # 阿里云 ONS 消息队列服务 Node.js SDK
 
+![Version](http://img.shields.io/npm/v/ons.svg)
+![Downloads](http://img.shields.io/npm/dm/ons.svg)
+![License](https://img.shields.io/npm/l/ons.svg?style=flat)
+![AppVeypr](https://ci.appveyor.com/api/projects/status/9qdfjl7ig6s9d72s/branch/master?svg=true)
+![TravisCI](https://travis-ci.org/XadillaX/aliyun-ons.svg)
+![Dependency](https://david-dm.org/XadillaX/aliyun-ons.svg)
+
 > **ONS**（开放消息服务）是基于阿里开源消息中间件MetaQ（RocketMQ）打造的一款云消息产品。
 
 ## 安装
