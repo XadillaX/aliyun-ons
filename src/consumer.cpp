@@ -239,7 +239,9 @@ void ONSConsumerV8::Stop()
     if(!inited || !started) return;
     if(!real_consumer) return;
 
+    if(consumer_env_v == "true") printf("Stopping!\n");
     real_consumer->shutdown();
+    if(consumer_env_v == "true") printf("Stopped!\n");
     started = false;
 }
 
@@ -302,6 +304,7 @@ Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
     Message* m = new Message(message);
     MessageHandlerParam* param = new MessageHandlerParam();
     param->message = m;
+
     param->ons = parent;
     param->ack_inner = ack_inner;
     async->data = (void*)param;

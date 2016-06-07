@@ -1,4 +1,4 @@
-#ifndef __CONSUMECONTEXT_H__
+﻿#ifndef __CONSUMECONTEXT_H__
 #define __CONSUMECONTEXT_H__
 
 namespace ons{

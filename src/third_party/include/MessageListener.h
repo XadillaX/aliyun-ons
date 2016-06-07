@@ -1,4 +1,4 @@
-#ifndef __MESSAGELISTENER_H__
+﻿#ifndef __MESSAGELISTENER_H__
 #define __MESSAGELISTENER_H__
 
 #include "Action.h"

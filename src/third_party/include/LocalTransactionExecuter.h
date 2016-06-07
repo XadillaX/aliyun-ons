@@ -1,4 +1,4 @@
-#ifndef __LOCALTRANSACTIONEXECUTER_H__
+﻿#ifndef __LOCALTRANSACTIONEXECUTER_H__
 #define __LOCALTRANSACTIONEXECUTER_H__
 
 #include "Message.h"

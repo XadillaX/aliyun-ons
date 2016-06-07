@@ -1,5 +1,5 @@
 /********************************************************************
-author:     ◊‘–ﬁ jianlin.yjl@alibaba-cn.com
+author:     √ó√î√ê√û jianlin.yjl@alibaba-cn.com
 *********************************************************************/
 #ifndef __ONSCLIENT_H__
 #define  __ONSCLIENT_H__

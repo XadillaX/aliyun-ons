@@ -1,4 +1,4 @@
-#ifndef __ONSCLIENTEXCEPTION_H__
+﻿#ifndef __ONSCLIENTEXCEPTION_H__
 #define __ONSCLIENTEXCEPTION_H__
 
 #include <exception>

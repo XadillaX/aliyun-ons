@@ -1,4 +1,4 @@
-#ifndef __PUSHCONSUMER_H__
+﻿#ifndef __PUSHCONSUMER_H__
 #define __PUSHCONSUMER_H__
 
 #include "MessageListener.h"

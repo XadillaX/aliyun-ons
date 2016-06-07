@@ -4,9 +4,9 @@
 namespace ons {
 
 enum TransactionStatus  {
-    CommitTransaction=0,//提交事务
-    RollbackTransaction=1,//回滚事务
-    Unknow=2,//未知状态，一般在用户无法确定事务是成功还是失败时使用
+    CommitTransaction=0,//脤谩陆禄脢脗脦帽
+    RollbackTransaction=1,//禄脴鹿枚脢脗脦帽
+    Unknow=2,//脦麓脰陋脳麓脤卢拢卢脪禄掳茫脭脷脫脙禄搂脦脼路篓脠路露篓脢脗脦帽脢脟鲁脡鹿娄禄鹿脢脟脢搂掳脺脢卤脢鹿脫脙
 };
 
 
