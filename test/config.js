@@ -20,8 +20,8 @@ try {
     };
 }
 
-if(process.platform === "win32") {
-    module.exports.producerId += "_win";
-    module.exports.consumerId += "_win";
-    module.exports.topic += "_win";
-}
+// if(process.platform === "win32") {
+//     module.exports.producerId += "_win";
+//     module.exports.consumerId += "_win";
+//     module.exports.topic += "_win";
+// }
