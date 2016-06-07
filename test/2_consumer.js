@@ -40,6 +40,8 @@ describe("#consumer", function() {
             var _message = message[0];
             var _ack = ack[0];
 
+            console.log(_message);
+
             _ack.done(false);
 
             _message.topic.should.be.eql(config.topic);
@@ -63,6 +65,8 @@ describe("#consumer", function() {
             var _message = message[1];
             var _ack = ack[1];
 
+            console.log(_message);
+
             _ack.done(true);
 
             _message.topic.should.be.eql(config.topic);
@@ -85,6 +89,8 @@ describe("#consumer", function() {
 
             var _message = message[2];
             var _ack = ack[2];
+
+            console.log(_message);
 
             _ack.done();
 
