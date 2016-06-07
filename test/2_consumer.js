@@ -20,6 +20,8 @@ describe("#consumer", function() {
     this.timeout(0);
 
     function listener(_message, _ack) {
+        // console.log(_message, _ack);
+        // console.log(message, ack);
         message.push(_message);
         ack.push(_ack);
     }
@@ -39,7 +41,7 @@ describe("#consumer", function() {
             var _message = message[0];
             var _ack = ack[0];
 
-            console.log(_message);
+            // console.log(_message);
 
             _ack.done(false);
 
@@ -64,7 +66,7 @@ describe("#consumer", function() {
             var _message = message[1];
             var _ack = ack[1];
 
-            console.log(_message);
+            // console.log(_message);
 
             _ack.done(true);
 
@@ -89,7 +91,7 @@ describe("#consumer", function() {
             var _message = message[2];
             var _ack = ack[2];
 
-            console.log(_message);
+            // console.log(_message);
 
             _ack.done();
 
@@ -106,9 +108,4 @@ describe("#consumer", function() {
 
         setTimeout(verify, 500);
     });
-
-    // it("should stop consumer", function(done) {
-    //     consumer.stop();
-    //     done();
-    // });
 });

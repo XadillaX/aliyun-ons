@@ -9,6 +9,8 @@
 var common = require("./common");
 
 describe("#thicken", function() {
+    this.timeout(0);
+
     it("should stop producer", function() {
         common.producer.stop();
     });

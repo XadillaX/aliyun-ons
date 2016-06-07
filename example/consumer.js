@@ -19,9 +19,9 @@ var consumer = new Consumer(
 consumer.on("message", function(message, ack) {
     console.log(message);
 
-    setTimeout(function() {
+    //setTimeout(function() {
         ack.done();
-    }, 1000);
+    //}, 1000);
 });
 
 console.log("Connecting to Aliyun ONS...");
