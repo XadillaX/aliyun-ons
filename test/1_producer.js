@@ -41,7 +41,7 @@ describe("#producer", function() {
             1000,
             function(err, id) {
                 should.ifError(err);
-                id.should.match(/^[0-9a-z]{32}$/);
+                id.should.match(/^[0-9a-zA-Z]{32}$/);
                 done();
             });
     });
