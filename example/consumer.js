@@ -6,20 +6,21 @@
  */
 "use strict";
 
+var config = require("../test/_config");
 var Consumer = require("../lib/consumer");
 
 var consumer = new Consumer(
-    "CID",
-    "topic",
-    "tag|*",
-    "access_key",
-    "secret_key");
+    config.consumerId,
+    config.topic,
+    "*",
+    config.accessKey,
+    config.secretKey);
 
 consumer.on("message", function(message, ack) {
     console.log(message);
 
     setTimeout(function() {
-        ack.done(Math.random() > 0.5);
+        ack.done();
     }, 1000);
 });
 
