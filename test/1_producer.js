@@ -9,10 +9,9 @@
 var should = require("should");
 
 var config = require("./config");
-var Producer = require("../").Producer;
 
 describe("#producer", function() {
-    var producer = new Producer(config.producerId, config.accessKey, config.secretKey);
+    var producer = require("./common").producer;
     var date = new Date();
 
     this.timeout(0);
@@ -46,8 +45,8 @@ describe("#producer", function() {
             });
     });
 
-    it("should stop producer", function(done) {
-        producer.stop();
-        done();
-    });
+    // it("should stop producer", function(done) {
+    //     producer.stop();
+    //     done();
+    // });
 });

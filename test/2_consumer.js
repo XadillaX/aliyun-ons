@@ -9,10 +9,9 @@
 require("should");
 
 var config = require("./config");
-var Consumer = require("../").Consumer;
 
 describe("#consumer", function() {
-    var consumer = new Consumer(config.consumerId, config.topic, "*", config.accessKey, config.secretKey);
+    var consumer = require("./common").consumer;
     var date = new Date();
     var DATE = "" + date.getUTCFullYear() + date.getUTCMonth() + date.getUTCDate();
     var ack = [];
@@ -108,8 +107,8 @@ describe("#consumer", function() {
         setTimeout(verify, 500);
     });
 
-    it("should stop consumer", function(done) {
-        consumer.stop();
-        done();
-    });
+    // it("should stop consumer", function(done) {
+    //     consumer.stop();
+    //     done();
+    // });
 });
