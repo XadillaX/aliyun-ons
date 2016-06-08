@@ -45,8 +45,25 @@ You can create a consumer by code following:
 
 ```javascript
 var Consumer = require("ons").Consumer;
-var consumer = new Consumer(CUSTOMER_ID, TOPIC, TAGS, ACCESS_KEY, SECRET_KEY);
+var consumer = new Consumer(CUSTOMER_ID, TOPIC, TAGS, ACCESS_KEY, SECRET_KEY, OPTIONS);
 ```
+
+> `OPTIONS` is optional and any parameters in `OPTIONS` are optional too.
+>
+> eg.
+>
+> ```javascript
+> {
+>     namesrvAddr: "112.124.141.191:80",
+>     onsAddr: "http://onsaddr-internet.aliyun.com:80/rocketmq/nsaddr4client-internet",
+>
+>     threadNum: 3
+> }
+> ```
+>
+> + **namesrvAddr:** the ONS server address
+> + **onsAddr:** an address to fetch ONS server address
+> + **threadNum:** worker thread count
 
 Next step you should set one or more message receive function to that consumer.
 
@@ -84,8 +101,25 @@ You can create a producer by code following:
 
 ```javascript
 var Producer = require("ons").Producer;
-var producer = new Producer(PRODUCER_ID, ACCESS_KEY, SECRET_KEY);
+var producer = new Producer(PRODUCER_ID, ACCESS_KEY, SECRET_KEY, OPTIONS);
 ```
+
+> `OPTIONS` is optional and any parameters in `OPTIONS` are optional too.
+>
+> eg.
+>
+> ```javascript
+> {
+>     namesrvAddr: "112.124.141.191:80",
+>     onsAddr: "http://onsaddr-internet.aliyun.com:80/rocketmq/nsaddr4client-internet",
+>
+>     sendTimeout: 1000
+> }
+> ```
+>
+> + **namesrvAddr:** the ONS server address
+> + **onsAddr:** an address to fetch ONS server address
+> + **sendTimeout:** timeout for sending a message
 
 After creating a producer, you should start it.
 

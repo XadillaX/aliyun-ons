@@ -42,8 +42,25 @@ $ npm install --save ons
 
 ```javascript
 var Consumer = require("ons").Consumer;
-var consumer = new Consumer(CUSTOMER_ID, TOPIC, TAGS, ACCESS_KEY, SECRET_KEY);
+var consumer = new Consumer(CUSTOMER_ID, TOPIC, TAGS, ACCESS_KEY, SECRET_KEY, OPTIONS);
 ```
+
+> `OPTIONS` 及其内部的参数都是可选的。
+>
+> 例如
+>
+> ```javascript
+> {
+>     namesrvAddr: "112.124.141.191:80",
+>     onsAddr: "http://onsaddr-internet.aliyun.com:80/rocketmq/nsaddr4client-internet",
+>
+>     threadNum: 3
+> }
+> ```
+>
+> + **namesrvAddr**：ONS 服务器地址
+> + **onsAddr**：用于寻找 ONS 服务器地址
+> + **threadNum**：工作线程数
 
 然后创建一个获取消息的事件监听。
 
@@ -83,6 +100,23 @@ consumer.stop();
 var Producer = require("ons").Producer;
 var producer = new Producer(PRODUCER_ID, ACCESS_KEY, SECRET_KEY);
 ```
+
+> `OPTIONS` 及其内部的参数都是可选的。
+>
+> 例如
+>
+> ```javascript
+> {
+>     namesrvAddr: "112.124.141.191:80",
+>     onsAddr: "http://onsaddr-internet.aliyun.com:80/rocketmq/nsaddr4client-internet",
+>
+>     sendTimeout: 1000
+> }
+> ```
+>
+> + **namesrvAddr**：ONS 服务器地址
+> + **onsAddr**：用于寻找 ONS 服务器地址
+> + **sendTimeout**：发送超时时间
 
 创建完毕之后需要启动它才能发消息。
 
