@@ -162,12 +162,12 @@ ONSProducerV8::ONSProducerV8(string _producer_id, string _access_key, string _se
 
     if(_options.ons_addr != "")
     {
-        factory_info.setFactoryProperty(ONSFactoryProperty::ONSAddr, _options.ons_addr);
+        factory_info.setFactoryProperty(ONSFactoryProperty::ONSAddr, _options.ons_addr.c_str());
     }
 
     if(_options.namesrv_addr != "")
     {
-        factory_info.setFactoryProperty(ONSFactoryProperty::NAMESRV_ADDR, _options.namesrv_addr);
+        factory_info.setFactoryProperty(ONSFactoryProperty::NAMESRV_ADDR, _options.namesrv_addr.c_str());
     }
 
     uv_mutex_init(&mutex);

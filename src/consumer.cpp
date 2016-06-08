@@ -94,26 +94,26 @@ ONSConsumerV8::ONSConsumerV8(
 
     if(_options.ons_addr != "")
     {
-        factory_info.setFactoryProperty(ONSFactoryProperty::ONSAddr, _options.ons_addr);
+        factory_info.setFactoryProperty(ONSFactoryProperty::ONSAddr, _options.ons_addr.c_str());
     }
 
     if(_options.namesrv_addr != "")
     {
-        factory_info.setFactoryProperty(ONSFactoryProperty::NAMESRV_ADDR, _options.namesrv_addr);
+        factory_info.setFactoryProperty(ONSFactoryProperty::NAMESRV_ADDR, _options.namesrv_addr.c_str());
     }
 
     if(_options.send_msg_timeout_millis != -1)
     {
         factory_info.setFactoryProperty(
                 ONSFactoryProperty::SendMsgTimeoutMillis,
-                std::to_string(_options.send_msg_timeout_millis));
+                std::to_string(_options.send_msg_timeout_millis).c_str());
     }
 
     if(_options.thread_num != -1)
     {
         factory_info.setFactoryProperty(
                 ONSFactoryProperty::ConsumeThreadNums,
-                std::to_string(_options.thread_num));
+                std::to_string(_options.thread_num).c_str());
     }
 
     if(consumer_env_v == "true")
