@@ -7,7 +7,7 @@
 ![TravisCI](https://travis-ci.org/XadillaX/aliyun-ons.svg)
 ![Dependency](https://david-dm.org/XadillaX/aliyun-ons.svg)
 
-> **ONS**（开放消息服务）是基于阿里开源消息中间件MetaQ（RocketMQ）打造的一款云消息产品。
+> **ONS**（开放消息服务）是基于阿里开源消息中间件 MetaQ（RocketMQ）打造的一款云消息产品。
 
 ## 安装
 
