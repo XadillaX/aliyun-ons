@@ -14,7 +14,10 @@ var consumer = new Consumer(
     config.topic,
     "*",
     config.accessKey,
-    config.secretKey);
+    config.secretKey, {
+        onsAddr: "http://onsaddr-internet.aliyun.com:80/rocketmq/nsaddr4client-internet",
+        threadNum: 10
+    });
 
 consumer.on("message", function(message, ack) {
     console.log(message);

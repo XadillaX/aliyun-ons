@@ -12,7 +12,9 @@ var Producer = require("../lib/producer");
 var producer = new Producer(
     config.producerId,
     config.accessKey,
-    config.secretKey);
+    config.secretKey, {
+        onsAddr: "http://onsaddr-internet.aliyun.com:80/rocketmq/nsaddr4client-internet"
+    });
 
 console.log("Connecting to Aliyun ONS...");
 producer.start(function() {
