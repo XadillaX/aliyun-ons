@@ -17,6 +17,7 @@
  */
 #ifndef __ONS_PRODUCER_H__
 #define __ONS_PRODUCER_H__
+#include "ons_options.h"
 #include <nan.h>
 #include <string>
 #include <uv.h>
@@ -32,7 +33,8 @@ private:
     explicit ONSProducerV8(
             string _producer_id,
             string _access_key,
-            string _secret_key);
+            string _secret_key,
+            ONSOptions _options);
     ~ONSProducerV8();
 
     static void New(const Nan::FunctionCallbackInfo<v8::Value>& info);
@@ -63,5 +65,4 @@ public:
     friend class ProducerPrepareWorker;
     friend class ProducerSendWorker;
 };
-
 #endif

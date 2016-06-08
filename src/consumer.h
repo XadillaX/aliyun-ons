@@ -17,6 +17,7 @@
  */
 #ifndef __ONS_CONSUMER_H__
 #define __ONS_CONSUMER_H__
+#include "ons_options.h"
 #include <nan.h>
 #include <string>
 #include <uv.h>
@@ -36,7 +37,8 @@ private:
             string _topics,
             string _tag,
             string _access_key,
-            string _secret_key);
+            string _secret_key,
+            ONSOptions _options);
     ~ONSConsumerV8();
 
     static void New(const Nan::FunctionCallbackInfo<v8::Value>& info);

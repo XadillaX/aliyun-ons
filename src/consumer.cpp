@@ -70,7 +70,8 @@ ONSConsumerV8::ONSConsumerV8(
         string _topics,
         string _tag,
         string _access_key,
-        string _secret_key) :
+        string _secret_key,
+        ONSOptions _options) :
     consumer_id(_consumer_id),
     topics(_topics),
     tag(_tag),
@@ -90,6 +91,38 @@ ONSConsumerV8::ONSConsumerV8(
     factory_info.setFactoryProperty(ONSFactoryProperty::PublishTopics, topics.c_str());
     factory_info.setFactoryProperty(ONSFactoryProperty::AccessKey, access_key.c_str());
     factory_info.setFactoryProperty(ONSFactoryProperty::SecretKey, secret_key.c_str());
+
+    if(_options.ons_addr != "")
+    {
+        factory_info.setFactoryProperty(ONSFactoryProperty::ONSAddr, _options.ons_addr);
+    }
+
+    if(_options.namesrv_addr != "")
+    {
+        factory_info.setFactoryProperty(ONSFactoryProperty::NAMESRV_ADDR, _options.namesrv_addr);
+    }
+
+    if(_options.send_msg_timeout_millis != -1)
+    {
+        factory_info.setFactoryProperty(
+                ONSFactoryProperty::SendMsgTimeoutMillis,
+                std::to_string(_options.send_msg_timeout_millis));
+    }
+
+    if(_options.thread_num != -1)
+    {
+        factory_info.setFactoryProperty(
+                ONSFactoryProperty::ConsumeThreadNums,
+                std::to_string(_options.thread_num));
+    }
+
+    if(consumer_env_v == "true")
+    {
+        printf("options: %s %d %d\n",
+                _options.ons_addr.c_str(),
+                _options.thread_num,
+                _options.send_msg_timeout_millis);
+    }
 
     listener = new ONSListenerV8(this);
 
@@ -131,8 +164,8 @@ void ONSConsumerV8::New(const Nan::FunctionCallbackInfo<v8::Value>& info)
 {
     if(!info.IsConstructCall())
     {
-        const int argc = 5;
-        v8::Local<v8::Value> argv[argc] = { info[0], info[1], info[2], info[3], info[4] };
+        const int argc = 6;
+        v8::Local<v8::Value> argv[argc] = { info[0], info[1], info[2], info[3], info[4], info[5] };
         v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
         info.GetReturnValue().Set(cons->NewInstance(argc, argv));
         return;
@@ -149,7 +182,8 @@ void ONSConsumerV8::New(const Nan::FunctionCallbackInfo<v8::Value>& info)
             *v8_topics,
             *v8_tag,
             *v8_access_key,
-            *v8_secret_key);
+            *v8_secret_key,
+            ONSOptions(info[5]));
 
     obj->Wrap(info.This());
     info.GetReturnValue().Set(info.This());

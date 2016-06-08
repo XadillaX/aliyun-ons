@@ -147,7 +147,7 @@ private:
     string error_msg;
 };
 
-ONSProducerV8::ONSProducerV8(string _producer_id, string _access_key, string _secret_key) :
+ONSProducerV8::ONSProducerV8(string _producer_id, string _access_key, string _secret_key, ONSOptions _options) :
     producer_id(_producer_id),
     access_key(_access_key),
     secret_key(_secret_key),
@@ -159,6 +159,16 @@ ONSProducerV8::ONSProducerV8(string _producer_id, string _access_key, string _se
     factory_info.setFactoryProperty(ONSFactoryProperty::ProducerId, producer_id.c_str());
     factory_info.setFactoryProperty(ONSFactoryProperty::AccessKey, access_key.c_str());
     factory_info.setFactoryProperty(ONSFactoryProperty::SecretKey, secret_key.c_str());
+
+    if(_options.ons_addr != "")
+    {
+        factory_info.setFactoryProperty(ONSFactoryProperty::ONSAddr, _options.ons_addr);
+    }
+
+    if(_options.namesrv_addr != "")
+    {
+        factory_info.setFactoryProperty(ONSFactoryProperty::NAMESRV_ADDR, _options.namesrv_addr);
+    }
 
     uv_mutex_init(&mutex);
 }
@@ -195,8 +205,8 @@ void ONSProducerV8::New(const Nan::FunctionCallbackInfo<v8::Value>& info)
 {
     if(!info.IsConstructCall())
     {
-        const int argc = 3;
-        v8::Local<v8::Value> argv[argc] = { info[0], info[1], info[2] };
+        const int argc = 4;
+        v8::Local<v8::Value> argv[argc] = { info[0], info[1], info[2], info[3] };
         v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
         info.GetReturnValue().Set(cons->NewInstance(argc, argv));
         return;
@@ -209,7 +219,8 @@ void ONSProducerV8::New(const Nan::FunctionCallbackInfo<v8::Value>& info)
     ONSProducerV8* obj = new ONSProducerV8(
             *v8_producer_id,
             *v8_access_key,
-            *v8_secret_key);
+            *v8_secret_key,
+            ONSOptions(info[3]));
 
     obj->Wrap(info.This());
     info.GetReturnValue().Set(info.This());
