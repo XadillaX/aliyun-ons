@@ -12,6 +12,11 @@ var Producer = require("../").Producer;
 var config = require("./config");
 
 module.exports = {
-    consumer: new Consumer(config.consumerId, config.topic, "*", config.accessKey, config.secretKey),
-    producer: new Producer(config.producerId, config.accessKey, config.secretKey)
+    consumer: new Consumer(config.consumerId, config.topic, "*", config.accessKey, config.secretKey, {
+        threadNum: 1,
+        onsAddr: "http://onsaddr-internet.aliyun.com:80/rocketmq/nsaddr4client-internet"
+    }),
+    producer: new Producer(config.producerId, config.accessKey, config.secretKey, {
+        namesrvAddr: "112.124.141.191:80"
+    })
 };
