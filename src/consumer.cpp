@@ -102,13 +102,6 @@ ONSConsumerV8::ONSConsumerV8(
         factory_info.setFactoryProperty(ONSFactoryProperty::NAMESRV_ADDR, _options.namesrv_addr.c_str());
     }
 
-    if(_options.send_msg_timeout_millis != -1)
-    {
-        factory_info.setFactoryProperty(
-                ONSFactoryProperty::SendMsgTimeoutMillis,
-                std::to_string(_options.send_msg_timeout_millis).c_str());
-    }
-
     if(_options.thread_num != -1)
     {
         factory_info.setFactoryProperty(

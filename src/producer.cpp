@@ -170,6 +170,13 @@ ONSProducerV8::ONSProducerV8(string _producer_id, string _access_key, string _se
         factory_info.setFactoryProperty(ONSFactoryProperty::NAMESRV_ADDR, _options.namesrv_addr.c_str());
     }
 
+    if(_options.send_msg_timeout_millis != -1)
+    {
+        factory_info.setFactoryProperty(
+                ONSFactoryProperty::SendMsgTimeoutMillis,
+                std::to_string(_options.send_msg_timeout_millis).c_str());
+    }
+
     uv_mutex_init(&mutex);
 }
 
