@@ -4,6 +4,7 @@
             "target_name": "ons",
             "sources": [
                 "src/entry.cpp",
+                "src/ons_options.cpp",
                 "src/consumer_ack.cpp",
                 "src/consumer.cpp",
                 "src/producer.cpp"
