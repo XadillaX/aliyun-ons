@@ -17,8 +17,16 @@
 
             "conditions": [
                 ["OS==\"mac\"", {
+                    "cflags!": [ "-fno-exceptions" ],
                     "cflags_cc!": [ "-fno-exceptions", "-pthread", "-Wl,--no-as-needed", "-ldl" ],
-                    "cflags_cc": [ "-Wno-ignored-qualifiers" ]
+                    "cflags_cc": [ "-Wno-ignored-qualifiers" ],
+                    "cflags": [ "-std=c++11", "-stdlib=libc++" ],
+                    "include_dirs": [
+                        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"
+                    ],
+                    "xcode_settings": {
+                        "GCC_ENABLE_CPP_EXCEPTIONS": "YES"
+                    }
                 }],
                 ["OS==\"linux\"", {
                     "libraries": [
@@ -26,7 +34,7 @@
                     ],
                     "cflags_cc!": [ "-fno-exceptions", "-pthread", "-Wl,--no-as-needed", "-ldl" ],
                     "cflags_cc": [ "-Wno-ignored-qualifiers" ],
-                    "cflags": [ "-std=c++0x" ]
+                    "cflags": [ "-std=c++11" ]
                 }],
                 ["OS==\"win\"", {
                     "conditions": [
