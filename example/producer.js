@@ -28,3 +28,8 @@ producer.start(function() {
         }
     }, 1000);
 });
+
+process.on("SIGINT", function() {
+    producer.stop();
+    process.exit(0);
+});

@@ -33,3 +33,8 @@ consumer.init(function() {
     consumer.listen();
     console.log("Listened.");
 });
+
+process.on("SIGINT", function() {
+    consumer.stop();
+    process.exit(0);
+});
