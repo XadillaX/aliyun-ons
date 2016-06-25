@@ -18,6 +18,9 @@
 #include "producer.h"
 #include "ONSClientException.h"
 
+std::string producer_env_v = std::getenv("NODE_ONS_LOG") == NULL ?
+        "" : std::getenv("NODE_ONS_LOG");
+
 Nan::Persistent<v8::Function> ONSProducerV8::constructor;
 
 class ProducerPrepareWorker : public Nan::AsyncWorker {
@@ -189,10 +192,8 @@ ONSProducerV8::~ONSProducerV8()
     uv_mutex_destroy(&mutex);
 }
 
-void ONSProducerV8::Init(v8::Local<v8::Object> exports)
+NAN_MODULE_INIT(ONSProducerV8::Init)
 {
-    Nan::HandleScope scope;
-
     v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
     tpl->SetClassName(Nan::New("ONSProducer").ToLocalChecked());
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
@@ -203,10 +204,10 @@ void ONSProducerV8::Init(v8::Local<v8::Object> exports)
     Nan::SetPrototypeMethod(tpl, "send", Send);
 
     constructor.Reset(tpl->GetFunction());
-    exports->Set(Nan::New("ONSProducer").ToLocalChecked(), tpl->GetFunction());
+    Nan::Set(target, Nan::New("ONSProducer").ToLocalChecked(), tpl->GetFunction());
 }
 
-void ONSProducerV8::New(const Nan::FunctionCallbackInfo<v8::Value>& info)
+NAN_METHOD(ONSProducerV8::New)
 {
     if(!info.IsConstructCall())
     {
@@ -231,10 +232,8 @@ void ONSProducerV8::New(const Nan::FunctionCallbackInfo<v8::Value>& info)
     info.GetReturnValue().Set(info.This());
 }
 
-void ONSProducerV8::Start(const Nan::FunctionCallbackInfo<v8::Value>& info)
+NAN_METHOD(ONSProducerV8::Start)
 {
-    Nan::HandleScope scope;
-
     ONSProducerV8* ons = ObjectWrap::Unwrap<ONSProducerV8>(info.Holder());
     Nan::Callback* cb = new Nan::Callback(info[0].As<v8::Function>());
 
@@ -264,16 +263,14 @@ void ONSProducerV8::Start(const Nan::FunctionCallbackInfo<v8::Value>& info)
     AsyncQueueWorker(new ProducerPrepareWorker(cb, *ons));
 }
 
-void ONSProducerV8::Stop(const Nan::FunctionCallbackInfo<v8::Value>& info)
+NAN_METHOD(ONSProducerV8::Stop)
 {
     ONSProducerV8* ons = ObjectWrap::Unwrap<ONSProducerV8>(info.Holder());
     ons->Stop();
 }
 
-void ONSProducerV8::Send(const Nan::FunctionCallbackInfo<v8::Value>& info)
+NAN_METHOD(ONSProducerV8::Send)
 {
-    Nan::HandleScope scope;
-
     ONSProducerV8* ons = ObjectWrap::Unwrap<ONSProducerV8>(info.Holder());
 
     Nan::Callback* cb = new Nan::Callback(info[5].As<v8::Function>());
@@ -299,9 +296,23 @@ void ONSProducerV8::Send(const Nan::FunctionCallbackInfo<v8::Value>& info)
 
 void ONSProducerV8::Stop()
 {
-    if(!inited || !started) return;
-    if(!real_producer) return;
+    uv_mutex_lock(&mutex);
+    if(!inited || !started) 
+    {
+        uv_mutex_unlock(&mutex);
+        return;
+    }
 
+    if(!real_producer)
+    {
+        uv_mutex_unlock(&mutex);
+        return;
+    }
+
+    if(producer_env_v == "true") printf("Producer stopping...\n");
     real_producer->shutdown();
+    if(producer_env_v == "true") printf("Producer stopped.\n");
     started = false;
+
+    uv_mutex_unlock(&mutex);
 }

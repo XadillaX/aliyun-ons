@@ -27,7 +27,7 @@ using namespace ons;
 
 class ONSProducerV8 : public Nan::ObjectWrap {
 public:
-    static void Init(v8::Local<v8::Object> exports);
+    static NAN_MODULE_INIT(Init);
 
 private:
     explicit ONSProducerV8(
@@ -37,10 +37,10 @@ private:
             ONSOptions _options);
     ~ONSProducerV8();
 
-    static void New(const Nan::FunctionCallbackInfo<v8::Value>& info);
-    static void Start(const Nan::FunctionCallbackInfo<v8::Value>& info);
-    static void Stop(const Nan::FunctionCallbackInfo<v8::Value>& info);
-    static void Send(const Nan::FunctionCallbackInfo<v8::Value>& info);
+    static NAN_METHOD(New);
+    static NAN_METHOD(Start);
+    static NAN_METHOD(Stop);
+    static NAN_METHOD(Send);
 
     static Nan::Persistent<v8::Function> constructor;
 
