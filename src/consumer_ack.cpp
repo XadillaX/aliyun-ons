@@ -17,6 +17,8 @@
  */
 #include "consumer_ack.h"
 
+Nan::Persistent<v8::Function> ONSConsumerACKV8::constructor;
+
 std::string ack_env_v = std::getenv("NODE_ONS_LOG") == NULL ?
         "" : std::getenv("NODE_ONS_LOG");
 
@@ -26,9 +28,31 @@ ONSConsumerACKV8::ONSConsumerACKV8()
 
 ONSConsumerACKV8::~ONSConsumerACKV8()
 {
+    inner = NULL;
 }
 
-void ONSConsumerACKV8::Done(const Nan::FunctionCallbackInfo<v8::Value>& info)
+void ONSConsumerACKV8::Init()
+{
+    Nan::HandleScope scope;
+
+    v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
+    tpl->SetClassName(Nan::New("ONSConsumer").ToLocalChecked());
+    tpl->InstanceTemplate()->SetInternalFieldCount(1);
+
+    // Prototype
+    Nan::SetPrototypeMethod(tpl, "done", Done);
+
+    constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
+}
+
+NAN_METHOD(ONSConsumerACKV8::New)
+{
+    ONSConsumerACKV8* obj = new ONSConsumerACKV8();
+    obj->Wrap(info.This());
+    info.GetReturnValue().Set(info.This());
+}
+
+NAN_METHOD(ONSConsumerACKV8::Done)
 {
     ONSConsumerACKV8* ack = ObjectWrap::Unwrap<ONSConsumerACKV8>(info.Holder());
     bool succ = true;

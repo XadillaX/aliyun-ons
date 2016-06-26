@@ -28,7 +28,8 @@ extern std::string ack_env_v;
 
 class ONSConsumerACKInner {
 public:
-    ONSConsumerACKInner()
+    ONSConsumerACKInner() :
+        acked(false)
     {
         uv_cond_init(&cond);
         uv_mutex_init(&mutex);
@@ -43,11 +44,20 @@ public:
 public:
     void Ack(Action result = Action::CommitMessage)
     {
+        uv_mutex_lock(&mutex);
+        bool _acked = acked;
+        uv_mutex_unlock(&mutex);
+        if(_acked)
+        {
+            return;
+        }
+
         ack_result = result;
         if(ack_env_v == "true") printf(">>>>> ACKed: 0x%lX\n", (unsigned long)this);
 
         uv_mutex_lock(&mutex);
         uv_cond_signal(&cond);
+        acked = true;
         uv_mutex_unlock(&mutex);
     }
 
@@ -68,6 +78,7 @@ private:
     uv_mutex_t mutex;
     uv_cond_t cond;
     Action ack_result;
+    bool acked;
 };
 
 class ONSListenerV8;
@@ -79,9 +90,19 @@ private:
     explicit ONSConsumerACKV8();
     ~ONSConsumerACKV8();
 
-    static void Done(const Nan::FunctionCallbackInfo<v8::Value>& info);
+    static NAN_METHOD(New);
+    static NAN_METHOD(Done);
+
+    static Nan::Persistent<v8::Function> constructor;
 
 public:
+    static void Init();
+
+    static Nan::Persistent<v8::Function>& GetConstructor()
+    {
+        return constructor;
+    }
+
     void SetInner(ONSConsumerACKInner* _inner)
     {
         inner = _inner;
