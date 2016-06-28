@@ -29,7 +29,7 @@ class PrepareWorker;
 
 class ONSConsumerV8 : public Nan::ObjectWrap {
 public:
-    static void Init(v8::Local<v8::Object> exports);
+    static NAN_MODULE_INIT(Init);
 
 private:
     explicit ONSConsumerV8(
@@ -41,11 +41,11 @@ private:
             ONSOptions _options);
     ~ONSConsumerV8();
 
-    static void New(const Nan::FunctionCallbackInfo<v8::Value>& info);
-    static void Prepare(const Nan::FunctionCallbackInfo<v8::Value>& info);
-    static void Listen(const Nan::FunctionCallbackInfo<v8::Value>& info);
-    static void Stop(const Nan::FunctionCallbackInfo<v8::Value>& info);
-    static void SetListener(const Nan::FunctionCallbackInfo<v8::Value>& info);
+    static NAN_METHOD(New);
+    static NAN_METHOD(Prepare);
+    static NAN_METHOD(Listen);
+    static NAN_METHOD(Stop);
+    static NAN_METHOD(SetListener);
 
     static Nan::Persistent<v8::Function> constructor;
 

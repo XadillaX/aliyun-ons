@@ -44,14 +44,14 @@ public:
     void Execute()
     {
         real_consumer = ONSFactory::getInstance()->createPushConsumer(factory_info);
+        
+        // subscribe
+        real_consumer->subscribe(factory_info.getPublishTopics(), ons.tag.c_str(), ons.listener);
     }
 
     void HandleOKCallback()
     {
         Nan::HandleScope scope;
-
-        // subscribe...
-        real_consumer->subscribe(factory_info.getPublishTopics(), ons.tag.c_str(), ons.listener);
 
         ons.real_consumer = real_consumer;
         ons.initializing = false;
@@ -87,6 +87,8 @@ ONSConsumerV8::ONSConsumerV8(
 
     listener_func(NULL)
 {
+    Nan::HandleScope scope;
+
     factory_info.setFactoryProperty(ONSFactoryProperty::ConsumerId, consumer_id.c_str());
     factory_info.setFactoryProperty(ONSFactoryProperty::PublishTopics, topics.c_str());
     factory_info.setFactoryProperty(ONSFactoryProperty::AccessKey, access_key.c_str());
@@ -122,23 +124,24 @@ ONSConsumerV8::ONSConsumerV8(
     uv_mutex_init(&mutex);
     loop = uv_default_loop();
 
-    uv_async_init(loop, &async, HandleMessage);
+    uv_async_init(loop, &async, ONSConsumerV8::HandleMessage);
 }
 
 ONSConsumerV8::~ONSConsumerV8()
 {
     Stop();
+
+    uv_mutex_lock(&mutex);
     if(real_consumer) delete real_consumer;
     if(listener) delete listener;
+    uv_mutex_unlock(&mutex);
 
     uv_mutex_destroy(&mutex);
     uv_close((uv_handle_t*)&async, NULL);
 }
 
-void ONSConsumerV8::Init(v8::Local<v8::Object> exports)
+NAN_MODULE_INIT(ONSConsumerV8::Init)
 {
-    Nan::HandleScope scope;
-
     v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
     tpl->SetClassName(Nan::New("ONSConsumer").ToLocalChecked());
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
@@ -149,11 +152,14 @@ void ONSConsumerV8::Init(v8::Local<v8::Object> exports)
     Nan::SetPrototypeMethod(tpl, "stop", Stop);
     Nan::SetPrototypeMethod(tpl, "setListener", SetListener);
 
-    constructor.Reset(tpl->GetFunction());
-    exports->Set(Nan::New("ONSConsumer").ToLocalChecked(), tpl->GetFunction());
+    constructor.Reset(Nan::GetFunction(tpl).ToLocalChecked());
+    Nan::Set(target, Nan::New("ONSConsumer").ToLocalChecked(), Nan::GetFunction(tpl).ToLocalChecked());
+
+    // initialize ack v8 constructor
+    ONSConsumerACKV8::Init();
 }
 
-void ONSConsumerV8::New(const Nan::FunctionCallbackInfo<v8::Value>& info)
+NAN_METHOD(ONSConsumerV8::New)
 {
     if(!info.IsConstructCall())
     {
@@ -182,7 +188,7 @@ void ONSConsumerV8::New(const Nan::FunctionCallbackInfo<v8::Value>& info)
     info.GetReturnValue().Set(info.This());
 }
 
-void ONSConsumerV8::Prepare(const Nan::FunctionCallbackInfo<v8::Value>& info)
+NAN_METHOD(ONSConsumerV8::Prepare)
 {
     ONSConsumerV8* ons = ObjectWrap::Unwrap<ONSConsumerV8>(info.Holder());
     Nan::Callback* cb = new Nan::Callback(info[0].As<v8::Function>());
@@ -213,7 +219,7 @@ void ONSConsumerV8::Prepare(const Nan::FunctionCallbackInfo<v8::Value>& info)
     AsyncQueueWorker(new ConsumerPrepareWorker(cb, *ons));
 }
 
-void ONSConsumerV8::Listen(const Nan::FunctionCallbackInfo<v8::Value>& info)
+NAN_METHOD(ONSConsumerV8::Listen)
 {
     ONSConsumerV8* ons = ObjectWrap::Unwrap<ONSConsumerV8>(info.Holder());
 
@@ -236,16 +242,19 @@ void ONSConsumerV8::Listen(const Nan::FunctionCallbackInfo<v8::Value>& info)
     }
 
     ons->started = true;
+
+    uv_mutex_lock(&ons->mutex);
     ons->real_consumer->start();
+    uv_mutex_unlock(&ons->mutex);
 }
 
-void ONSConsumerV8::Stop(const Nan::FunctionCallbackInfo<v8::Value>& info)
+NAN_METHOD(ONSConsumerV8::Stop)
 {
     ONSConsumerV8* ons = ObjectWrap::Unwrap<ONSConsumerV8>(info.Holder());
     ons->Stop();
 }
 
-void ONSConsumerV8::SetListener(const Nan::FunctionCallbackInfo<v8::Value>& info)
+NAN_METHOD(ONSConsumerV8::SetListener)
 {
     ONSConsumerV8* ons = ObjectWrap::Unwrap<ONSConsumerV8>(info.Holder());
 
@@ -263,13 +272,24 @@ void ONSConsumerV8::SetListener(const Nan::FunctionCallbackInfo<v8::Value>& info
 
 void ONSConsumerV8::Stop()
 {
-    if(!inited || !started) return;
-    if(!real_consumer) return;
+    uv_mutex_lock(&mutex);
+    if(!inited || !started)
+    {
+        uv_mutex_unlock(&mutex);
+        return;
+    }
+    if(!real_consumer)
+    {
+        uv_mutex_unlock(&mutex);
+        return;
+    }
 
     if(consumer_env_v == "true") printf("Stopping!\n");
     real_consumer->shutdown();
     if(consumer_env_v == "true") printf("Stopped!\n");
     started = false;
+
+    uv_mutex_unlock(&mutex);
 }
 
 void ONSConsumerV8::HandleMessage(uv_async_t* handle)
@@ -277,21 +297,20 @@ void ONSConsumerV8::HandleMessage(uv_async_t* handle)
     Nan::HandleScope scope;
 
     MessageHandlerParam* param = (MessageHandlerParam*)handle->data;
-
     Message* message = param->message;
+
     ONSConsumerV8* ons = param->ons;
+
+    // create ack inner
     ONSConsumerACKInner* ack_inner = param->ack_inner;
-    ONSConsumerACKV8* ack = new ONSConsumerACKV8();
+
+    // create ack object and set inner
+    v8::Local<v8::Function> cons = Nan::New<v8::Function>(ONSConsumerACKV8::GetConstructor());
+    v8::Local<v8::Object> ack_obj = cons->NewInstance(0, {});
+    ONSConsumerACKV8* ack = ObjectWrap::Unwrap<ONSConsumerACKV8>(ack_obj);
     ack->SetInner(ack_inner);
 
-    // create ack object
-    v8::Local<v8::ObjectTemplate> ack_templ = Nan::New<v8::ObjectTemplate>();
-    ack_templ->SetInternalFieldCount(1);
-    //Nan::SetMethod<v8::Local<v8::ObjectTemplate>>(ack_templ, "done", ONSConsumerACKV8::Done);
-    Nan::SetMethod(ack_templ, "done", ONSConsumerACKV8::Done);
-    v8::Local<v8::Object> ack_obj = ack_templ->NewInstance();
-    ack->Wrap(ack_obj);
-
+    // create message object
     v8::Local<v8::Object> result = Nan::New<v8::Object>();
     result->Set(
             Nan::New<v8::String>("topic").ToLocalChecked(),
@@ -318,19 +337,19 @@ void ONSConsumerV8::HandleMessage(uv_async_t* handle)
     v8::Local<v8::Value> argv[3] = { Nan::Undefined(), result, ack_obj };
     Nan::Callback* callback = ons->GetListenerFunc();
     callback->Call(3, argv);
-
-    delete param->message;
-    delete param;
 }
 
 Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
 {
     ONSConsumerACKInner* ack_inner = new ONSConsumerACKInner();
-
-    if(consumer_env_v == "true") printf(">>> Inner Created: 0x%lX\n", (unsigned long)ack_inner);
-    Message* m = new Message(message);
     MessageHandlerParam* param = new MessageHandlerParam();
-    param->message = m;
+    param->message = &message;
+
+    if(consumer_env_v == "true")
+    {
+        printf(">>> ACK Inner Created: 0x%lX\n", (unsigned long)ack_inner);
+        printf(">>> Message Handler Param Created: 0x%lX\n", (unsigned long)param);
+    }
 
     param->ons = parent;
     param->ack_inner = ack_inner;
@@ -338,8 +357,15 @@ Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
     uv_async_send(async);
 
     Action result = ack_inner->WaitResult();
+
     delete ack_inner;
-    if(consumer_env_v == "true") printf(">>> ACK Deleted: 0x%lX\n", (unsigned long)ack_inner);
+    delete param;
+
+    if(consumer_env_v == "true")
+    {
+        printf(">>> ACK Inner Deleted: 0x%lX\n", (unsigned long)ack_inner);
+        printf(">>> Message Handler Param Deleted: 0x%lX\n", (unsigned long)param);
+    }
 
     return result;
 }
