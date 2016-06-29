@@ -32,6 +32,8 @@ ONSOptions::ONSOptions(v8::Local<v8::Value> value)
 
     if(value->IsObject())
     {
+        Nan::HandleScope scope;
+
         v8::Local<v8::Object> v8_options = value->ToObject();
 
         v8::Local<v8::Value> v8_thread_num = Nan::Get(v8_options,
