@@ -16,6 +16,7 @@ describe("#consumer", function() {
     var DATE = "" + date.getUTCFullYear() + date.getUTCMonth() + date.getUTCDate();
     var ack = [];
     var message = [];
+    var leftReconsume = true;
 
     this.timeout(0);
 
@@ -74,9 +75,17 @@ describe("#consumer", function() {
             _message.tag.should.be.eql("tagA");
             _message.key.should.be.eql("");
             _message.msgId.should.match(/^[0-9A-Z]{32}$/);
-            _message.body.should.be.eql("World " + DATE);
-            _message.reconsumeTimes.should.be.eql(0);
-            _message.startDeliverTime.should.not.be.eql(0);
+
+            if(_message.reconsumeTimes === 0) {
+                _message.body.should.be.eql("World " + DATE);
+                _message.reconsumeTimes.should.be.eql(0);
+                _message.startDeliverTime.should.not.be.eql(0);
+            } else {
+                _message.body.should.be.eql("Hello " + DATE);
+                _message.reconsumeTimes.should.be.eql(1);
+                _message.startDeliverTime.should.be.eql(0);
+                leftReconsume = false;
+            }
 
             done();
         }
@@ -99,9 +108,16 @@ describe("#consumer", function() {
             _message.tag.should.be.eql("tagA");
             _message.key.should.be.eql("");
             _message.msgId.should.match(/^[0-9A-Z]{32}$/);
-            _message.body.should.be.eql("Hello " + DATE);
-            _message.reconsumeTimes.should.be.eql(1);
-            _message.startDeliverTime.should.be.eql(0);
+
+            if(leftReconsume) {
+                _message.body.should.be.eql("Hello " + DATE);
+                _message.reconsumeTimes.should.be.eql(1);
+                _message.startDeliverTime.should.be.eql(0);
+            } else {
+                _message.body.should.be.eql("World " + DATE);
+                _message.reconsumeTimes.should.be.eql(0);
+                _message.startDeliverTime.should.not.be.eql(0);
+            }
 
             done();
         }
