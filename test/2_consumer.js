@@ -25,6 +25,10 @@ describe("#consumer", function() {
         // console.log(message, ack);
         message.push(_message);
         ack.push(_ack);
+
+        if(ack.length >= 3) {
+            _ack.done();
+        }
     }
 
     it("should start consumer", function(done) {
