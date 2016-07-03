@@ -95,6 +95,8 @@ That's easy! And what's more, you can stop it when you want.
 consumer.stop();
 ```
 
+> **Caution:** You should `ack` all received messages (whether `done(true)` or `done(false)`) before you call `consumer.stop()`, or you'll be blocked in the `stop` function.
+
 ### Producer
 
 You can create a producer by code following:

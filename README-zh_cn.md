@@ -92,6 +92,8 @@ consumer.init(function(err) {
 consumer.stop();
 ```
 
+> **注意：**在调用 `stop()` 之前，你需要 `ack` 所有已接收到的消息（无论是 `done(true)` 或者 `done(false)`），否则你会被该函数阻塞住。
+
 ### Producer
 
 通过下面的代码来创建一个 Producer。
