@@ -4,7 +4,7 @@
   "description": "SDK of Node.js for Aliyun ONS (Aliyun Open Notification Service).",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/_mocha"
+    "test": "NODE_ONS_LOG=true ./node_modules/.bin/_mocha"
   },
   "repository": {
     "type": "git",
