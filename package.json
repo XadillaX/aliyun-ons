@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/XadillaX/aliyun-ons#readme",
   "dependencies": {
-    "nan": "^2.3.5"
+    "nan": "^2.4.0"
   },
   "devDependencies": {
     "mocha": "^2.5.3",

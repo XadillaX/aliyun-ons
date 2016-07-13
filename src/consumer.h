@@ -56,7 +56,7 @@ public:
     {
         Nan::Callback* cb;
         uv_mutex_lock(&mutex);
-        cb = listener_func;
+        cb = &listener_func;
         uv_mutex_unlock(&mutex);
         return cb;
     }
@@ -84,7 +84,7 @@ private:
     PushConsumer* real_consumer;
     MessageListener* listener;
 
-    Nan::Callback* listener_func;
+    Nan::Callback listener_func;
 
     uv_mutex_t mutex;
     uv_async_t async;
@@ -92,24 +92,6 @@ private:
 
 public:
     friend class ConsumerPrepareWorker;
+    friend class ConsumerStopWorker;
 };
-
-class ONSListenerV8 : public MessageListener {
-public:
-    ONSListenerV8(ONSConsumerV8* parent)
-        : parent(parent)
-    {
-        async = parent->GetAsync();
-    }
-
-    virtual ~ONSListenerV8()
-    {
-    }
-    virtual Action consume(Message& message, ConsumeContext& context);
-
-private:
-    ONSConsumerV8* parent;
-    uv_async_t* async;
-};
-
 #endif

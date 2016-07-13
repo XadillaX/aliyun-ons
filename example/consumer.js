@@ -35,6 +35,7 @@ consumer.init(function() {
 });
 
 process.on("SIGINT", function() {
-    consumer.stop();
-    process.exit(0);
+    consumer.stop(function() {
+        process.exit(0);
+    });
 });

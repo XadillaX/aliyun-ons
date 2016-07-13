@@ -127,5 +127,4 @@ public:
 private:
     ONSConsumerACKInner* inner;
 };
-
 #endif

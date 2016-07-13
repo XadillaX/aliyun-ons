@@ -17,53 +17,15 @@
  */
 #include "consumer.h"
 #include "consumer_ack.h"
+#include "consumer_listener.h"
+
+#include "consumer_workers/consumer_prepare_worker.h"
+#include "consumer_workers/consumer_stop_worker.h"
 
 std::string consumer_env_v = std::getenv("NODE_ONS_LOG") == NULL ?
         "" : std::getenv("NODE_ONS_LOG");
 
 Nan::Persistent<v8::Function> ONSConsumerV8::constructor;
-
-struct MessageHandlerParam
-{
-    ONSConsumerV8* ons;
-    Message* message;
-    ONSConsumerACKInner* ack_inner;
-};
-
-class ConsumerPrepareWorker : public Nan::AsyncWorker {
-public:
-    ConsumerPrepareWorker(Nan::Callback* callback, ONSConsumerV8& ons) :
-        AsyncWorker(callback),
-        ons(ons),
-        factory_info(ons.factory_info)
-    {
-    }
-
-    ~ConsumerPrepareWorker() {}
-
-    void Execute()
-    {
-        real_consumer = ONSFactory::getInstance()->createPushConsumer(factory_info);
-        
-        // subscribe
-        real_consumer->subscribe(factory_info.getPublishTopics(), ons.tag.c_str(), ons.listener);
-    }
-
-    void HandleOKCallback()
-    {
-        Nan::HandleScope scope;
-
-        ons.real_consumer = real_consumer;
-        ons.initializing = false;
-        ons.inited = true;
-        callback->Call(0, 0);
-    }
-
-private:
-    ONSConsumerV8& ons;
-    ONSFactoryProperty& factory_info;
-    PushConsumer* real_consumer;
-};
 
 ONSConsumerV8::ONSConsumerV8(
         string _consumer_id,
@@ -85,7 +47,7 @@ ONSConsumerV8::ONSConsumerV8(
     real_consumer(NULL),
     listener(NULL),
 
-    listener_func(NULL)
+    listener_func()
 {
     Nan::HandleScope scope;
 
@@ -251,7 +213,8 @@ NAN_METHOD(ONSConsumerV8::Listen)
 NAN_METHOD(ONSConsumerV8::Stop)
 {
     ONSConsumerV8* ons = ObjectWrap::Unwrap<ONSConsumerV8>(info.Holder());
-    ons->Stop();
+    Nan::Callback* cb = new Nan::Callback(info[0].As<v8::Function>());
+    AsyncQueueWorker(new ConsumerStopWorker(cb, *ons));
 }
 
 NAN_METHOD(ONSConsumerV8::SetListener)
@@ -259,37 +222,13 @@ NAN_METHOD(ONSConsumerV8::SetListener)
     ONSConsumerV8* ons = ObjectWrap::Unwrap<ONSConsumerV8>(info.Holder());
 
     uv_mutex_lock(&ons->mutex);
-    if(ons->listener_func)
+    if(!ons->listener_func.IsEmpty())
     {
-        delete ons->listener_func;
-        ons->listener_func = NULL;
+        ons->listener_func.Reset();
     }
 
-    Nan::Callback* cb = new Nan::Callback(info[0].As<v8::Function>());
-    ons->listener_func = cb;
+    ons->listener_func.Reset(info[0].As<v8::Function>());
     uv_mutex_unlock(&ons->mutex);
-}
-
-void ONSConsumerV8::Stop()
-{
-    uv_mutex_lock(&mutex);
-    if(!inited || !started)
-    {
-        uv_mutex_unlock(&mutex);
-        return;
-    }
-    if(!real_consumer)
-    {
-        uv_mutex_unlock(&mutex);
-        return;
-    }
-
-    if(consumer_env_v == "true") printf("Stopping!\n");
-    real_consumer->shutdown();
-    if(consumer_env_v == "true") printf("Stopped!\n");
-    started = false;
-
-    uv_mutex_unlock(&mutex);
 }
 
 void ONSConsumerV8::HandleMessage(uv_async_t* handle)
@@ -339,33 +278,24 @@ void ONSConsumerV8::HandleMessage(uv_async_t* handle)
     callback->Call(3, argv);
 }
 
-Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
+void ONSConsumerV8::Stop()
 {
-    ONSConsumerACKInner* ack_inner = new ONSConsumerACKInner();
-    MessageHandlerParam* param = new MessageHandlerParam();
-    param->message = &message;
-
-    if(consumer_env_v == "true")
+    uv_mutex_lock(&mutex);
+    if(!inited || !started)
     {
-        printf(">>> ACK Inner Created: 0x%lX\n", (unsigned long)ack_inner);
-        printf(">>> Message Handler Param Created: 0x%lX\n", (unsigned long)param);
+        uv_mutex_unlock(&mutex);
+        return;
+    }
+    if(!real_consumer)
+    {
+        uv_mutex_unlock(&mutex);
+        return;
     }
 
-    param->ons = parent;
-    param->ack_inner = ack_inner;
-    async->data = (void*)param;
-    uv_async_send(async);
+    if(consumer_env_v == "true") printf("Stopping!\n");
+    real_consumer->shutdown();
+    if(consumer_env_v == "true") printf("Stopped!\n");
+    started = false;
 
-    Action result = ack_inner->WaitResult();
-
-    delete ack_inner;
-    delete param;
-
-    if(consumer_env_v == "true")
-    {
-        printf(">>> ACK Inner Deleted: 0x%lX\n", (unsigned long)ack_inner);
-        printf(">>> Message Handler Param Deleted: 0x%lX\n", (unsigned long)param);
-    }
-
-    return result;
+    uv_mutex_unlock(&mutex);
 }

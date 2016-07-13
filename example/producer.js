@@ -30,6 +30,7 @@ producer.start(function() {
 });
 
 process.on("SIGINT", function() {
-    producer.stop();
-    process.exit(0);
+    producer.stop(function() {
+        process.exit(0);
+    });
 });

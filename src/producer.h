@@ -64,5 +64,6 @@ private:
 public:
     friend class ProducerPrepareWorker;
     friend class ProducerSendWorker;
+    friend class ProducerStopWorker;
 };
 #endif
