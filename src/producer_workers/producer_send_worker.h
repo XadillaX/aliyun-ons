@@ -46,19 +46,28 @@ public:
 
     void Execute()
     {
+        uv_mutex_lock(&ons.mutex);
+        if(!ons.inited || !ons.started || !ons.real_producer)
+        {
+            error_msg = "producer stopped.";
+            errored = true;
+
+            uv_mutex_unlock(&ons.mutex);
+            return;
+        }
+
         Message msg(topic.c_str(), tags.c_str(), content.c_str());
+
         if(key != "")
         {
             msg.setKey(key.c_str());
         }
         
-        // delay...
         if(send_at != -1)
         {
             msg.setStartDeliverTime(send_at);
         }
 
-        uv_mutex_lock(&ons.mutex);
         Producer* real_producer = ons.real_producer;
 
         try
@@ -69,6 +78,7 @@ public:
         {
             error_msg = e.GetMsg();
             errored = true;
+
             uv_mutex_unlock(&ons.mutex);
             return;
         }
@@ -82,9 +92,7 @@ public:
 
         if(errored)
         {
-            v8::Local<v8::Value> argv[1] = {
-                Nan::Error(error_msg.c_str())
-            };
+            v8::Local<v8::Value> argv[1] = { Nan::Error(error_msg.c_str()) };
             callback->Call(1, argv);
             return;
         }

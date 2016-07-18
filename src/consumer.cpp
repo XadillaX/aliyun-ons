@@ -89,8 +89,10 @@ ONSConsumerV8::~ONSConsumerV8()
     Stop();
 
     if(real_consumer) {
-        delete real_consumer;
         real_consumer = NULL;
+
+        // needn't to delete real_consumer
+        // refer to document: https://help.aliyun.com/document_detail/29559.html
     }
 
     if(listener) {
@@ -285,7 +287,12 @@ void ONSConsumerV8::Stop()
     if(consumer_env_v == "true") printf("consumer stopping!\n");
 
     real_consumer->shutdown();
+    real_consumer = NULL;
+
+    // needn't to delete real_consumer
+    // refer to document: https://help.aliyun.com/document_detail/29559.html   
 
     if(consumer_env_v == "true") printf("consumer stopped!\n");
+
     started = false;
 }

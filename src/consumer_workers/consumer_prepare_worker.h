@@ -32,12 +32,13 @@ public:
 
     void Execute()
     {
-        real_consumer = ONSFactory::getInstance()
-            ->createPushConsumer(factory_info);
+        real_consumer = ONSFactory::getInstance()->createPushConsumer(factory_info);
         
         // subscribe
-        real_consumer->subscribe(factory_info.getPublishTopics(),
-                ons.tag.c_str(), ons.listener);
+        real_consumer->subscribe(
+                factory_info.getPublishTopics(),
+                ons.tag.c_str(),
+                ons.listener);
     }
 
     void HandleOKCallback()
@@ -55,5 +56,4 @@ private:
     ONSFactoryProperty& factory_info;
     PushConsumer* real_consumer;
 };
-
 #endif

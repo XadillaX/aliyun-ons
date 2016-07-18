@@ -64,12 +64,13 @@ ONSProducerV8::~ONSProducerV8()
 {
     Stop();
 
-    uv_mutex_lock(&mutex);
-    if(real_producer) delete real_producer;
-    real_producer = NULL;
-    uv_mutex_unlock(&mutex);
+    if(real_producer)
+    {
+        real_producer = NULL;
 
-    uv_mutex_destroy(&mutex);
+        // needn't delete real_producer
+        // refer to document: https://help.aliyun.com/document_detail/29556.html
+    }
 }
 
 NAN_MODULE_INIT(ONSProducerV8::Init)
@@ -78,7 +79,6 @@ NAN_MODULE_INIT(ONSProducerV8::Init)
     tpl->SetClassName(Nan::New("ONSProducer").ToLocalChecked());
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
-    // Prototype
     Nan::SetPrototypeMethod(tpl, "start", Start);
     Nan::SetPrototypeMethod(tpl, "stop", Stop);
     Nan::SetPrototypeMethod(tpl, "send", Send);
@@ -117,23 +117,19 @@ NAN_METHOD(ONSProducerV8::Start)
     ONSProducerV8* ons = ObjectWrap::Unwrap<ONSProducerV8>(info.Holder());
     Nan::Callback* cb = new Nan::Callback(info[0].As<v8::Function>());
 
-    // if it's initialized...
+    // if it's initialized, it can't be started again
     if(ons->inited)
     {
-        v8::Local<v8::Value> argv[1] = { 
-            Nan::Error("This ONS producer is initialized.")
-        };
+        v8::Local<v8::Value> argv[1] = { Nan::Error("This ONS producer is initialized.") };
         cb->Call(1, argv);
         delete cb;
         return;
     }
 
-    // if it's initializing...
+    // if it's initializing, it can't be initialized again
     if(ons->initializing)
     {
-        v8::Local<v8::Value> argv[1] = {
-            Nan::Error("This ONS producer is initializing.")
-        };
+        v8::Local<v8::Value> argv[1] = { Nan::Error("This ONS producer is initializing.") };
         cb->Call(1, argv);
         delete cb;
         return;
@@ -156,11 +152,10 @@ NAN_METHOD(ONSProducerV8::Send)
 
     Nan::Callback* cb = new Nan::Callback(info[5].As<v8::Function>());
 
+    // if it's not initialized or not started, throw an error
     if(!ons->inited || !ons->started)
     {
-        v8::Local<v8::Value> argv[1] = { 
-            Nan::Error("This ONS producer is not started.")
-        };
+        v8::Local<v8::Value> argv[1] = { Nan::Error("This ONS producer is not started.") };
         cb->Call(1, argv);
         delete cb;
         return;
@@ -178,6 +173,7 @@ NAN_METHOD(ONSProducerV8::Send)
 void ONSProducerV8::Stop()
 {
     uv_mutex_lock(&mutex);
+
     if(!inited || !started) 
     {
         uv_mutex_unlock(&mutex);
@@ -190,10 +186,17 @@ void ONSProducerV8::Stop()
         return;
     }
 
-    if(producer_env_v == "true") printf("Producer stopping...\n");
-    real_producer->shutdown();
-    if(producer_env_v == "true") printf("Producer stopped.\n");
-    started = false;
+    if(producer_env_v == "true") printf("producer stopping...\n");
 
+    real_producer->shutdown();
+    real_producer = NULL;
+
+    // needn't delete real_producer
+    // refer to document: https://help.aliyun.com/document_detail/29556.html
+
+    if(producer_env_v == "true") printf("producer stopped.\n");
+
+    started = false;
+    
     uv_mutex_unlock(&mutex);
 }
