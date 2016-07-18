@@ -6,8 +6,6 @@
  */
 "use strict";
 
-var heapdump = require("heapdump");
-
 var config = require("../test/_config");
 var Consumer = require("../lib/consumer");
 
@@ -34,15 +32,6 @@ consumer.init(function() {
     console.log("Initialized.");
     consumer.listen();
     console.log("Listened.");
-
-    setTimeout(function() {
-        heapdump.writeSnapshot(function(err, filename) {
-            console.log(filename);
-            consumer.stop(function() {
-                process.exit(0);
-            });
-        });
-    }, 60000 * 5);
 });
 
 process.on("SIGINT", function() {
