@@ -47,14 +47,17 @@ public:
         uv_mutex_lock(&mutex);
         bool _acked = acked;
         uv_mutex_unlock(&mutex);
-        if(_acked)
-        {
-            return;
-        }
+
+        // if acknowledged, DONOT acknowledge again
+        if(_acked) return;
 
         ack_result = result;
-        if(ack_env_v == "true") printf(">>>>> ACKed: 0x%lX\n", (unsigned long)this);
 
+        // write down some debug information
+        // while `NODE_ONS_LOG=true`
+        if(ack_env_v == "true") printf("[-----] ack: 0x%lX\n", (unsigned long)this);
+
+        // tell `this->WaitResult()` to continue
         uv_mutex_lock(&mutex);
         uv_cond_signal(&cond);
         acked = true;
@@ -63,12 +66,18 @@ public:
 
     Action WaitResult()
     {
+        // Wait for `this->Ack`
+        //
+        // and it will emit `uv_cond_signal` to let it stop wait
         uv_mutex_lock(&mutex);
         uv_cond_wait(&cond, &mutex);
         uv_mutex_unlock(&mutex);
 
         Action result = ack_result;
-        if(ack_env_v == "true") printf(">>>>> Finish Wait: 0x%lX\n", (unsigned long)this);
+
+        // write down some debug information
+        // while `NODE_ONS_LOG=true`
+        if(ack_env_v == "true") printf("[-----] finish wait: 0x%lX\n", (unsigned long)this);
 
         return result;
     }
@@ -105,6 +114,9 @@ public:
 
     void SetInner(ONSConsumerACKInner* _inner)
     {
+        // set the real `Acker` in the main loop
+        //
+        // it's thread-safe
         inner = _inner;
     }
 
@@ -112,16 +124,18 @@ public:
     {
         if(inner)
         {
+            // call true `inner->Ack` in the main loop
+            //
+            // because this function <ONSConsumerACKV8::Ack()> will called on
+            // the main loop only
             inner->Ack(result);
-            if(ack_env_v == "true") printf(">>> Inner unrefed: 0x%lX\n", (unsigned long)inner);
+
+            // write down some debug information
+            // while `NODE_ONS_LOG=true`
+            if(ack_env_v == "true") printf("[---] inner unrefed: 0x%lX\n", (unsigned long)inner);
+
             inner = NULL;
         }
-    }
-
-    Action WaitResult()
-    {
-        if(inner) return inner->WaitResult();
-        return Action::CommitMessage;
     }
 
 private:

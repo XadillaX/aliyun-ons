@@ -66,6 +66,7 @@ ONSProducerV8::~ONSProducerV8()
 
     uv_mutex_lock(&mutex);
     if(real_producer) delete real_producer;
+    real_producer = NULL;
     uv_mutex_unlock(&mutex);
 
     uv_mutex_destroy(&mutex);

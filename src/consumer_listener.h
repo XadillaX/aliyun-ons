@@ -17,6 +17,7 @@
  */
 #ifndef __CONSUMER_LISTENER_H__
 #define __CONSUMER_LISTENER_H__
+#include <queue>
 #include <nan.h>
 #include <uv.h>
 #include "ONSFactory.h"
@@ -34,20 +35,23 @@ struct MessageHandlerParam
 };
 
 class ONSListenerV8 : public MessageListener {
-public:
-    ONSListenerV8(ONSConsumerV8* parent)
-        : parent(parent)
-    {
-        async = parent->GetAsync();
-    }
+public: 
+    ONSListenerV8(ONSConsumerV8*);
+    virtual ~ONSListenerV8();
 
-    virtual ~ONSListenerV8()
-    {
-    }
-    virtual Action consume(Message& message, ConsumeContext& context);
+    virtual Action consume(Message&, ConsumeContext&);
+
+    uv_async_t* GetAsync();
+    void RestoreAsync(uv_async_t*);
 
 private:
+    int thread_count;
     ONSConsumerV8* parent;
-    uv_async_t* async;
+
+    // pool for async
+    unsigned int thread_num;
+    uv_async_t* async_pool;
+    queue<uv_async_t*> idle_async;
+    uv_mutex_t mutex;
 };
 #endif

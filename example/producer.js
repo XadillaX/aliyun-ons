@@ -26,11 +26,12 @@ producer.start(function() {
                 console.log(err, messageId);
             }); /* jshint ignore: line */
         }
-    }, 1000);
+    }, 100);
 });
 
 process.on("SIGINT", function() {
     producer.stop(function() {
+        console.log("Stopped.");
         process.exit(0);
     });
 });

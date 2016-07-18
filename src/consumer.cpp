@@ -82,24 +82,21 @@ ONSConsumerV8::ONSConsumerV8(
     }
 
     listener = new ONSListenerV8(this);
-
-    uv_mutex_init(&mutex);
-    loop = uv_default_loop();
-
-    uv_async_init(loop, &async, ONSConsumerV8::HandleMessage);
 }
 
 ONSConsumerV8::~ONSConsumerV8()
 {
     Stop();
 
-    uv_mutex_lock(&mutex);
-    if(real_consumer) delete real_consumer;
-    if(listener) delete listener;
-    uv_mutex_unlock(&mutex);
+    if(real_consumer) {
+        delete real_consumer;
+        real_consumer = NULL;
+    }
 
-    uv_mutex_destroy(&mutex);
-    uv_close((uv_handle_t*)&async, NULL);
+    if(listener) {
+        delete listener;
+        listener = NULL;
+    }
 }
 
 NAN_MODULE_INIT(ONSConsumerV8::Init)
@@ -108,7 +105,6 @@ NAN_MODULE_INIT(ONSConsumerV8::Init)
     tpl->SetClassName(Nan::New("ONSConsumer").ToLocalChecked());
     tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
-    // Prototype
     Nan::SetPrototypeMethod(tpl, "init", Prepare);
     Nan::SetPrototypeMethod(tpl, "listen", Listen);
     Nan::SetPrototypeMethod(tpl, "stop", Stop);
@@ -205,9 +201,7 @@ NAN_METHOD(ONSConsumerV8::Listen)
 
     ons->started = true;
 
-    uv_mutex_lock(&ons->mutex);
     ons->real_consumer->start();
-    uv_mutex_unlock(&ons->mutex);
 }
 
 NAN_METHOD(ONSConsumerV8::Stop)
@@ -221,14 +215,12 @@ NAN_METHOD(ONSConsumerV8::SetListener)
 {
     ONSConsumerV8* ons = ObjectWrap::Unwrap<ONSConsumerV8>(info.Holder());
 
-    uv_mutex_lock(&ons->mutex);
     if(!ons->listener_func.IsEmpty())
     {
         ons->listener_func.Reset();
     }
 
     ons->listener_func.Reset(info[0].As<v8::Function>());
-    uv_mutex_unlock(&ons->mutex);
 }
 
 void ONSConsumerV8::HandleMessage(uv_async_t* handle)
@@ -280,22 +272,20 @@ void ONSConsumerV8::HandleMessage(uv_async_t* handle)
 
 void ONSConsumerV8::Stop()
 {
-    uv_mutex_lock(&mutex);
     if(!inited || !started)
     {
-        uv_mutex_unlock(&mutex);
         return;
     }
+
     if(!real_consumer)
     {
-        uv_mutex_unlock(&mutex);
         return;
     }
 
-    if(consumer_env_v == "true") printf("Stopping!\n");
-    real_consumer->shutdown();
-    if(consumer_env_v == "true") printf("Stopped!\n");
-    started = false;
+    if(consumer_env_v == "true") printf("consumer stopping!\n");
 
-    uv_mutex_unlock(&mutex);
+    real_consumer->shutdown();
+
+    if(consumer_env_v == "true") printf("consumer stopped!\n");
+    started = false;
 }

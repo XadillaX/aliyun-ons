@@ -25,6 +25,7 @@
     "nan": "^2.4.0"
   },
   "devDependencies": {
+    "heapdump": "^0.3.7",
     "mocha": "^2.5.3",
     "should": "^9.0.0"
   }
