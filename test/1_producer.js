@@ -26,7 +26,6 @@ describe("#producer", function() {
             "tagA",
             "Hello " + date.getUTCFullYear() + date.getUTCMonth() + date.getUTCDate(),
             function(err, id) {
-                // console.log(err, id);
                 should.ifError(err);
                 id.should.match(/^[0-9A-Z]{32}$/);
                 done();
@@ -40,7 +39,6 @@ describe("#producer", function() {
             "World " + date.getUTCFullYear() + date.getUTCMonth() + date.getUTCDate(),
             1000,
             function(err, id) {
-                // console.log(err, id);
                 should.ifError(err);
                 id.should.match(/^[0-9a-zA-Z]{32}$/);
                 done();
