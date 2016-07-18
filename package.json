@@ -27,6 +27,7 @@
   "devDependencies": {
     "heapdump": "^0.3.7",
     "mocha": "^2.5.3",
+    "scarlet-task": "^1.0.0",
     "should": "^9.0.0"
   }
 }
