@@ -28,6 +28,11 @@ ONSListenerV8::ONSListenerV8(ONSConsumerV8* parent) : parent(parent)
 
     // create `uv_async_pool`
     thread_num = parent->factory_info.getConsumeThreadNums();
+    if(consumer_listener_env_v == "true")
+    {
+        printf("[-] consume thread count: %d\n", thread_num);
+    }
+
     async_pool = new uv_async_t[thread_num];
     for(unsigned int i = 0; i < thread_num; i++)
     {
