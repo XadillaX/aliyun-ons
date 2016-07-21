@@ -18,4 +18,6 @@ try {
         consumerId: env.ONS_CONSUMER_ID,
         topic: env.ONS_TOPIC
     };
+
+    console.log("[Test val: " + env.TEST_VAL + "]");
 }
