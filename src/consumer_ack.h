@@ -48,10 +48,13 @@ public:
     {
         uv_mutex_lock(&mutex);
         bool _acked = acked;
-        uv_mutex_unlock(&mutex);
 
         // if acknowledged, DONOT acknowledge again
-        if(_acked) return;
+        if(_acked)
+        {
+            uv_mutex_unlock(&mutex);
+            return;
+        }
 
         ack_result = result;
 
@@ -63,22 +66,34 @@ public:
         }
 
         // tell `this->WaitResult()` to continue
-        uv_mutex_lock(&mutex);
-        uv_cond_signal(&cond);
         acked = true;
+        uv_cond_signal(&cond);
         uv_mutex_unlock(&mutex);
     }
 
     Action WaitResult()
-    {
+    { 
+        uv_mutex_lock(&mutex);
+
+        // If `cond signal` sent before `WaitResult()`,
+        // `uv_cond_wait` will blocked and will never continue
+        //
+        // So we have to return result directly without `uv_cond_wait`
+        if(acked)
+        {
+            Action result = result;
+            uv_mutex_unlock(&mutex);
+
+            return result;
+        }
+
         // Wait for `this->Ack`
         //
         // and it will emit `uv_cond_signal` to let it stop wait
-        uv_mutex_lock(&mutex);
         uv_cond_wait(&cond, &mutex);
-        uv_mutex_unlock(&mutex);
 
         Action result = ack_result;
+        uv_mutex_unlock(&mutex);
 
         // write down some debug information
         // while `NODE_ONS_LOG=true`
