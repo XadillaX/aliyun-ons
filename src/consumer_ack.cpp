@@ -22,13 +22,19 @@ Nan::Persistent<v8::Function> ONSConsumerACKV8::constructor;
 std::string ack_env_v = std::getenv("NODE_ONS_LOG") == NULL ?
         "" : std::getenv("NODE_ONS_LOG");
 
-ONSConsumerACKV8::ONSConsumerACKV8() : inner(NULL)
+ONSConsumerACKV8::ONSConsumerACKV8() : inner(NULL), msg_id(NULL)
 {
 }
 
 ONSConsumerACKV8::~ONSConsumerACKV8()
 {
     inner = NULL;
+
+    if(msg_id)
+    {
+        delete []msg_id;
+        msg_id = NULL;
+    }
 }
 
 void ONSConsumerACKV8::Init()
@@ -60,7 +66,7 @@ NAN_METHOD(ONSConsumerACKV8::Done)
     bool succ = true;
     if(info.Length() >= 1)
     {
-        succ = info[0]->ToBoolean()->Value();
+        succ = (info[0]->IsUndefined() || info[0]->IsNull() || info[0]->ToBoolean()->Value());
     }
 
     // call v8 ack object's `Ack` function to emit the true `Acker`'s

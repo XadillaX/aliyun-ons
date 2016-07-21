@@ -26,10 +26,12 @@ using namespace std;
 
 extern std::string ack_env_v;
 
+class ONSListenerV8;
 class ONSConsumerACKInner {
 public:
-    ONSConsumerACKInner() :
-        acked(false)
+    ONSConsumerACKInner(const char* msg_id) :
+        acked(false),
+        msg_id(msg_id)
     {
         uv_cond_init(&cond);
         uv_mutex_init(&mutex);
@@ -55,7 +57,10 @@ public:
 
         // write down some debug information
         // while `NODE_ONS_LOG=true`
-        if(ack_env_v == "true") printf("[-----] ack: 0x%lX\n", (unsigned long)this);
+        if(ack_env_v == "true")
+        {
+            printf("[%s][-----] ack: 0x%lX\n", msg_id.c_str(), (unsigned long)this);
+        }
 
         // tell `this->WaitResult()` to continue
         uv_mutex_lock(&mutex);
@@ -77,7 +82,10 @@ public:
 
         // write down some debug information
         // while `NODE_ONS_LOG=true`
-        if(ack_env_v == "true") printf("[-----] finish wait: 0x%lX\n", (unsigned long)this);
+        if(ack_env_v == "true")
+        {
+            printf("[%s][-----] finish wait: 0x%lX\n", msg_id.c_str(), (unsigned long)this);
+        }
 
         return result;
     }
@@ -88,9 +96,11 @@ private:
     uv_cond_t cond;
     Action ack_result;
     bool acked;
+
+public:
+    string msg_id;
 };
 
-class ONSListenerV8;
 class ONSConsumerACKV8 : public Nan::ObjectWrap {
 public:
     friend class ONSConsumerV8;
@@ -118,6 +128,15 @@ public:
         //
         // it's thread-safe
         inner = _inner;
+
+        if(msg_id)
+        {
+            delete []msg_id;
+            msg_id = NULL;
+        }
+
+        msg_id = new char[inner->msg_id.size() + 1];
+        strcpy(msg_id, inner->msg_id.c_str());
     }
 
     void Ack(Action result = Action::CommitMessage)
@@ -132,7 +151,10 @@ public:
 
             // write down some debug information
             // while `NODE_ONS_LOG=true`
-            if(ack_env_v == "true") printf("[---] inner unrefed: 0x%lX\n", (unsigned long)inner);
+            if(ack_env_v == "true")
+            {
+                printf("[%s][---] inner unrefed: 0x%lX\n", msg_id, (unsigned long)inner);
+            }
 
             inner = NULL;
         }
@@ -140,5 +162,6 @@ public:
 
 private:
     ONSConsumerACKInner* inner;
+    char* msg_id;
 };
 #endif

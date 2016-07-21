@@ -22,6 +22,12 @@
 std::string consumer_listener_env_v = std::getenv("NODE_ONS_LOG") == NULL ?
         "" : std::getenv("NODE_ONS_LOG");
 
+#ifdef WIN32
+#define GET_UNSAFE_CONST_CHAR(str) str
+#else
+#define GET_UNSAFE_CONST_CHAR(str) str.c_str()
+#endif
+
 ONSListenerV8::ONSListenerV8(ONSConsumerV8* parent) : parent(parent)
 {
     uv_mutex_init(&mutex);
@@ -87,15 +93,20 @@ void ONSListenerV8::RestoreAsync(uv_async_t* async)
 
 Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
 {
-    ONSConsumerACKInner* ack_inner = new ONSConsumerACKInner();
+    const char* msg_id = GET_UNSAFE_CONST_CHAR(message.getMsgID());
+
+    ONSConsumerACKInner* ack_inner = new ONSConsumerACKInner(msg_id);
     MessageHandlerParam* param = new MessageHandlerParam();
+    param->message = &message;
+    param->ons = parent;
+    param->ack_inner = ack_inner;
 
     // log some debug information
     // if `NODE_ONS_LOG=true`
     if(consumer_listener_env_v == "true")
     {
-        printf("[---] ack inner created: 0x%lX\n", (unsigned long)ack_inner);
-        printf("[---] message handler param created: 0x%lX\n", (unsigned long)param);
+        printf("[%s][---] ack inner created: 0x%lX\n", msg_id, (unsigned long)ack_inner);
+        printf("[%s][---] message handler param created: 0x%lX\n", msg_id, (unsigned long)param);
     }
 
     // create a uv_async_t
@@ -110,9 +121,9 @@ Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
 
         if(consumer_listener_env_v == "true")
         {
-            printf("[----] failed to get async object\n");
-            printf("[---] ack inner deleted: 0x%lX\n", (unsigned long)ack_inner);
-            printf("[---] message handler parameter deleted: 0x%lX\n", (unsigned long)param);
+            printf("[%s][----] failed to get async object\n", msg_id);
+            printf("[%s][---] ack inner deleted: 0x%lX\n", msg_id, (unsigned long)ack_inner);
+            printf("[%s][---] message handler parameter deleted: 0x%lX\n", msg_id, (unsigned long)param);
         }
 
         return Action::ReconsumeLater;
@@ -120,23 +131,18 @@ Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
 
     if(consumer_listener_env_v == "true")
     {
-        printf("[----] async object 0x%lX got\n", (unsigned long)async);
-    }
-
-    param->message = &message;
-    param->ons = parent;
-    param->ack_inner = ack_inner;
+        printf("[%s][----] async object 0x%lX got\n", msg_id, (unsigned long)async);
+    } 
 
     async->data = (void*)param;
     uv_async_send(async);
 
     Action result = ack_inner->WaitResult();
 
+    async->data = NULL;
     param->ons = NULL;
     param->ack_inner = NULL;
     param->message = NULL;
-
-    async->data = NULL;
 
     delete ack_inner;
     delete param;
@@ -145,8 +151,8 @@ Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
     // if `NODE_ONS_LOG=true`
     if(consumer_listener_env_v == "true")
     {
-        printf("[---] ack inner deleted: 0x%lX\n", (unsigned long)ack_inner);
-        printf("[---] message handler parameter deleted: 0x%lX\n", (unsigned long)param);
+        printf("[%s][---] ack inner deleted: 0x%lX\n", msg_id, (unsigned long)ack_inner);
+        printf("[%s][---] message handler parameter deleted: 0x%lX\n", msg_id, (unsigned long)param);
     }
 
     // restore `uv_async_t` object
