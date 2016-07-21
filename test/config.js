@@ -19,9 +19,3 @@ try {
         topic: env.ONS_TOPIC
     };
 }
-
-// if(process.platform === "win32") {
-//     module.exports.producerId += "_win";
-//     module.exports.consumerId += "_win";
-//     module.exports.topic += "_win";
-// }
