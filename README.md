@@ -19,15 +19,9 @@ SDK of Node.js for Aliyun ONS.
 $ npm install --save ons
 ```
 
-> **NOTE:** Because of Aliyun ONS C++ SDK's closed source, it only provides linux static library file (libonsclient4cpp.a). So you can only install this package under linux so far.
+> **NOTE:** Because of Aliyun ONS C++ SDK's closed source, it only provides Linux and Windows library file (libonsclient4cpp.a, ONSClientCPP.lib). So you can only install this package under Linux and Windows so far.
 >
-> If you need to develop under OSX, please run a vagrant or a docker.
->
-> **Microsoft Windows is supported now since version 1.2.0!**
->
-> ~~And what's more, because of C++ SDK again, I only can consider every messge as successfully processed and commit `succeed` back to ONS service.~~ (**ACK feature is finished!**)
->
-> You're welcome to provide some useful solution!
+> **If you need to develop under OSX, please run a vagrant or a docker.**
 
 ## Usage
 
@@ -37,7 +31,7 @@ You can do steps above by refering to [help desk](https://help.aliyun.com/produc
 
 ### Examples
 
-Here's examples for [consumer](example/consumer.js) and [producer](example/producer.js).
+Here's some examples for [consumer](example/consumer.js) and [producer](example/producer.js).
 
 ### Consumer
 
@@ -92,10 +86,23 @@ consumer.init(function(err) {
 That's easy! And what's more, you can stop it when you want.
 
 ```javascript
-consumer.stop();
+consumer.stop(function() {
+    // closed
+});
 ```
 
-> **Caution:** You should `ack` all received messages (whether `done(true)` or `done(false)`) before you call `consumer.stop()`, or you'll be blocked in the `stop` function.
+> **Caution:** You should `ack` all received messages (whether `done(true)` or `done(false)`) before you call `consumer.stop()`, or you won't get callback function called in `stop` and consumer won't be stopped.
+>
+> **What's more, you'd better to stop consumer before your program exited. e.g.**
+>
+> ```javascript
+> process.on("SIGINT", function() {
+>     consumer.stop(function() {
+>         process.exit(0);
+>     });
+> });
+> ```
+> You should write down your exit code in your own scene.
 
 ### Producer
 
@@ -106,9 +113,7 @@ var Producer = require("ons").Producer;
 var producer = new Producer(PRODUCER_ID, ACCESS_KEY, SECRET_KEY, OPTIONS);
 ```
 
-> `OPTIONS` is optional and any parameters in `OPTIONS` are optional too.
->
-> eg.
+> `OPTIONS` is optional and any parameters in `OPTIONS` are optional too. e.g.
 >
 > ```javascript
 > {
@@ -149,8 +154,32 @@ producer.send(TOPIC, TAGS, CONTENT, function(err, messageId) {
 That's easy! And what's more, you can stop it when you want.
 
 ```javascript
-producer.stop();
+producer.stop(function() {
+    // closed
+});
 ```
+
+> **Caution:** you'd better to stop producer before your program exited. e.g.
+>
+> ```javascript
+> process.on("SIGINT", function() {
+>     producer.stop(function() {
+>         process.exit(0);
+>     });
+> });
+> ```
+>
+> You should write down your exit code in your own scene.
+
+## About Memory
+
+If your ONS queue has stored a large crowd of messages on server, your local program memory will boom to very large to pull almostly all messages on server.
+
+> C++ ONS SDK starts an additional thread to pull messages all the time from to local program and wait for consume thread to consume.
+>
+> — Technical Support of Aliyun ONS
+
+You may refer to [#9](https://github.com/XadillaX/aliyun-ons/pull/9) and [#8 (comment)](https://github.com/XadillaX/aliyun-ons/issues/8#issuecomment-233607029).
 
 ## Contribute
 
