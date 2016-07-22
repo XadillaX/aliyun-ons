@@ -1,10 +1,10 @@
 {
   "name": "ons",
-  "version": "2.0.0-rc.4",
+  "version": "2.0.0",
   "description": "SDK of Node.js for Aliyun ONS (Aliyun Open Notification Service).",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/_mocha"
+    "test": "./node_modules/.bin/_mocha test/1_producer.js test/2_consumer.js test/3_thicken.js"
   },
   "repository": {
     "type": "git",
