@@ -33,5 +33,4 @@ public:
     ONSOptions();
     ONSOptions(v8::Local<v8::Value> value); 
 };
-
 #endif

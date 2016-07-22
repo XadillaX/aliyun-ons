@@ -19,12 +19,10 @@ var consumer = new Consumer(
         threadNum: 10
     });
 
+var consumed = 0;
 consumer.on("message", function(message, ack) {
-    console.log(message);
-
-    //setTimeout(function() {
-        ack.done();
-    //}, 1000);
+    console.log(message, ++consumed);
+    ack.done();
 });
 
 console.log("Connecting to Aliyun ONS...");
@@ -35,6 +33,7 @@ consumer.init(function() {
 });
 
 process.on("SIGINT", function() {
-    consumer.stop();
-    process.exit(0);
+    consumer.stop(function() {
+        process.exit(0);
+    });
 });

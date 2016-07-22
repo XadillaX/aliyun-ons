@@ -26,10 +26,12 @@ using namespace std;
 
 extern std::string ack_env_v;
 
+class ONSListenerV8;
 class ONSConsumerACKInner {
 public:
-    ONSConsumerACKInner() :
-        acked(false)
+    ONSConsumerACKInner(const char* msg_id) :
+        acked(false),
+        msg_id(msg_id)
     {
         uv_cond_init(&cond);
         uv_mutex_init(&mutex);
@@ -46,29 +48,59 @@ public:
     {
         uv_mutex_lock(&mutex);
         bool _acked = acked;
-        uv_mutex_unlock(&mutex);
+
+        // if acknowledged, DONOT acknowledge again
         if(_acked)
         {
+            uv_mutex_unlock(&mutex);
             return;
         }
 
         ack_result = result;
-        if(ack_env_v == "true") printf(">>>>> ACKed: 0x%lX\n", (unsigned long)this);
 
-        uv_mutex_lock(&mutex);
-        uv_cond_signal(&cond);
+        // write down some debug information
+        // while `NODE_ONS_LOG=true`
+        if(ack_env_v == "true")
+        {
+            printf("[%s][-----] ack: 0x%lX\n", msg_id.c_str(), (unsigned long)this);
+        }
+
+        // tell `this->WaitResult()` to continue
         acked = true;
+        uv_cond_signal(&cond);
         uv_mutex_unlock(&mutex);
     }
 
     Action WaitResult()
-    {
+    { 
         uv_mutex_lock(&mutex);
+
+        // If `cond signal` sent before `WaitResult()`,
+        // `uv_cond_wait` will blocked and will never continue
+        //
+        // So we have to return result directly without `uv_cond_wait`
+        if(acked)
+        {
+            Action result = result;
+            uv_mutex_unlock(&mutex);
+
+            return result;
+        }
+
+        // Wait for `this->Ack`
+        //
+        // and it will emit `uv_cond_signal` to let it stop wait
         uv_cond_wait(&cond, &mutex);
-        uv_mutex_unlock(&mutex);
 
         Action result = ack_result;
-        if(ack_env_v == "true") printf(">>>>> Finish Wait: 0x%lX\n", (unsigned long)this);
+        uv_mutex_unlock(&mutex);
+
+        // write down some debug information
+        // while `NODE_ONS_LOG=true`
+        if(ack_env_v == "true")
+        {
+            printf("[%s][-----] finish wait: 0x%lX\n", msg_id.c_str(), (unsigned long)this);
+        }
 
         return result;
     }
@@ -79,9 +111,11 @@ private:
     uv_cond_t cond;
     Action ack_result;
     bool acked;
+
+public:
+    string msg_id;
 };
 
-class ONSListenerV8;
 class ONSConsumerACKV8 : public Nan::ObjectWrap {
 public:
     friend class ONSConsumerV8;
@@ -105,27 +139,44 @@ public:
 
     void SetInner(ONSConsumerACKInner* _inner)
     {
+        // set the real `Acker` in the main loop
+        //
+        // it's thread-safe
         inner = _inner;
+
+        if(msg_id)
+        {
+            delete []msg_id;
+            msg_id = NULL;
+        }
+
+        msg_id = new char[inner->msg_id.size() + 1];
+        strcpy(msg_id, inner->msg_id.c_str());
     }
 
     void Ack(Action result = Action::CommitMessage)
     {
         if(inner)
         {
+            // call true `inner->Ack` in the main loop
+            //
+            // because this function <ONSConsumerACKV8::Ack()> will called on
+            // the main loop only
             inner->Ack(result);
-            if(ack_env_v == "true") printf(">>> Inner unrefed: 0x%lX\n", (unsigned long)inner);
+
+            // write down some debug information
+            // while `NODE_ONS_LOG=true`
+            if(ack_env_v == "true")
+            {
+                printf("[%s][---] inner unrefed: 0x%lX\n", msg_id, (unsigned long)inner);
+            }
+
             inner = NULL;
         }
     }
 
-    Action WaitResult()
-    {
-        if(inner) return inner->WaitResult();
-        return Action::CommitMessage;
-    }
-
 private:
     ONSConsumerACKInner* inner;
+    char* msg_id;
 };
-
 #endif

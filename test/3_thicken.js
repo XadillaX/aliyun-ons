@@ -11,11 +11,15 @@ var common = require("./common");
 describe("#thicken", function() {
     this.timeout(0);
 
-    it("should stop producer", function() {
-        common.producer.stop();
+    it("should stop producer", function(done) {
+        common.producer.stop(function() {
+            done();
+        });
     });
 
-    it("should stop consumer", function() {
-        common.consumer.stop();
+    it("should stop consumer", function(done) {
+        common.consumer.stop(function() {
+            done();
+        });
     });
 });

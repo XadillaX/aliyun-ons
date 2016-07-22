@@ -17,6 +17,6 @@ module.exports = {
         onsAddr: "http://onsaddr-internet.aliyun.com:80/rocketmq/nsaddr4client-internet"
     }),
     producer: new Producer(config.producerId, config.accessKey, config.secretKey, {
-        namesrvAddr: "112.124.141.191:80"
+        onsAddr: "http://onsaddr-internet.aliyun.com:80/rocketmq/nsaddr4client-internet"
     })
 };

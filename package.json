@@ -1,6 +1,6 @@
 {
   "name": "ons",
-  "version": "1.5.0",
+  "version": "2.0.0-rc.4",
   "description": "SDK of Node.js for Aliyun ONS (Aliyun Open Notification Service).",
   "main": "index.js",
   "scripts": {
@@ -22,10 +22,12 @@
   },
   "homepage": "https://github.com/XadillaX/aliyun-ons#readme",
   "dependencies": {
-    "nan": "^2.3.5"
+    "nan": "^2.4.0"
   },
   "devDependencies": {
+    "heapdump": "^0.3.7",
     "mocha": "^2.5.3",
+    "scarlet-task": "^1.0.0",
     "should": "^9.0.0"
   }
 }
