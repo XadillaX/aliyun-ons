@@ -1,0 +1,3 @@
+[submodule "src/third_party/sole"]
+path = src/third_party/sole
+url = https://github.com/r-lyeh/sole.git
