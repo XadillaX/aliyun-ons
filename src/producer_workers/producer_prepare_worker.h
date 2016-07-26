@@ -21,10 +21,12 @@
 
 class ProducerPrepareWorker : public Nan::AsyncWorker {
 public:
-    ProducerPrepareWorker(Nan::Callback* callback, ONSProducerV8& ons) :
+    ProducerPrepareWorker(Nan::Callback* callback, ONSProducerV8& ons, string u4, int stdout_fd) :
         AsyncWorker(callback),
         ons(ons),
-        factory_info(ons.factory_info)
+        factory_info(ons.factory_info),
+        uuid(u4),
+        stdout_fd(stdout_fd)
     {
     }
 
@@ -40,16 +42,29 @@ public:
     {
         Nan::HandleScope scope;
 
+        if(uuid != "")
+        {
+            fclose(stdout);
+            dup2(stdout_fd, STDOUT_FILENO);
+            stdout = fdopen(STDOUT_FILENO, "w");
+            close(stdout_fd);
+        }
+
         ons.real_producer = real_producer;
         ons.initializing = false;
         ons.inited = true;
         ons.started = true;
-        callback->Call(0, 0);
+
+        v8::Local<v8::Value> argv[2] = { Nan::Undefined(), Nan::New<v8::String>(uuid).ToLocalChecked() };
+        callback->Call(2, argv);
     }
 
 private:
     ONSProducerV8& ons;
     ONSFactoryProperty& factory_info;
     Producer* real_producer;
+
+    int stdout_fd;
+    string uuid;
 };
 #endif

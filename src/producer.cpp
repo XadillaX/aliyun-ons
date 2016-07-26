@@ -15,6 +15,9 @@
  *
  * =====================================================================================
  */
+#include <unistd.h>
+#include <sole.hpp>
+
 #include "producer.h"
 #include "ONSClientException.h"
 
@@ -135,8 +138,24 @@ NAN_METHOD(ONSProducerV8::Start)
         return;
     }
 
+    bool need_get_log = false;
+    if(info.Length() > 1)
+    {
+        need_get_log = !info[1]->ToBoolean()->Value();
+    }
+
+    int stdout_fd = 0;
+    string u4 = "";
+
+    if(need_get_log)
+    {
+        stdout_fd = dup(STDOUT_FILENO);
+        u4 = sole::uuid4().str();
+        freopen(("./.ons-" + u4 + ".log").c_str(), "w", stdout);
+    }
+
     ons->initializing = true;
-    AsyncQueueWorker(new ProducerPrepareWorker(cb, *ons));
+    AsyncQueueWorker(new ProducerPrepareWorker(cb, *ons, u4, stdout_fd));
 }
 
 NAN_METHOD(ONSProducerV8::Stop)

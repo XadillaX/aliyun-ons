@@ -21,10 +21,12 @@
 
 class ConsumerPrepareWorker : public Nan::AsyncWorker {
 public:
-    ConsumerPrepareWorker(Nan::Callback* callback, ONSConsumerV8& ons) :
+    ConsumerPrepareWorker(Nan::Callback* callback, ONSConsumerV8& ons, string uuid, int stdout_fd) :
         AsyncWorker(callback),
         ons(ons),
-        factory_info(ons.factory_info)
+        factory_info(ons.factory_info),
+        uuid(uuid),
+        stdout_fd(stdout_fd)
     {
     }
 
@@ -45,15 +47,27 @@ public:
     {
         Nan::HandleScope scope;
 
+        if(uuid != "")
+        {
+            fclose(stdout);
+            dup2(stdout_fd, STDOUT_FILENO);
+            stdout = fdopen(STDOUT_FILENO, "w");
+            close(stdout_fd);
+        }
+
         ons.real_consumer = real_consumer;
         ons.initializing = false;
         ons.inited = true;
-        callback->Call(0, 0);
+
+        v8::Local<v8::Value> argv[2] = { Nan::Undefined(), Nan::New<v8::String>(uuid).ToLocalChecked() };
+        callback->Call(2, argv);
     }
 
 private:
     ONSConsumerV8& ons;
     ONSFactoryProperty& factory_info;
     PushConsumer* real_consumer;
+    string uuid;
+    int stdout_fd;
 };
 #endif

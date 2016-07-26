@@ -15,6 +15,9 @@
  *
  * =====================================================================================
  */
+#include <unistd.h>
+#include <sole.hpp>
+
 #include "consumer.h"
 #include "consumer_ack.h"
 #include "consumer_listener.h"
@@ -175,8 +178,25 @@ NAN_METHOD(ONSConsumerV8::Prepare)
         return;
     }
 
+    bool need_get_log = false;
+    if(info.Length() > 1)
+    {
+        need_get_log = !info[1]->ToBoolean()->Value();
+    }
+
     ons->initializing = true;
-    AsyncQueueWorker(new ConsumerPrepareWorker(cb, *ons));
+
+    int stdout_fd = 0;
+    string u4 = "";
+
+    if(need_get_log)
+    {
+        stdout_fd = dup(STDOUT_FILENO);
+        u4 = sole::uuid4().str();
+        freopen(("./.ons-" + u4 + ".log").c_str(), "w", stdout);
+    }
+
+    AsyncQueueWorker(new ConsumerPrepareWorker(cb, *ons, u4, stdout_fd));
 }
 
 NAN_METHOD(ONSConsumerV8::Listen)
