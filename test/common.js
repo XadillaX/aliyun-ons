@@ -8,6 +8,7 @@
 
 var Consumer = require("../").Consumer;
 var Producer = require("../").Producer;
+var OriginalLog = require("../").OriginalLog;
 
 var config = require("./config");
 
@@ -18,5 +19,10 @@ module.exports = {
     }),
     producer: new Producer(config.producerId, config.accessKey, config.secretKey, {
         onsAddr: "http://onsaddr-internet.aliyun.com:80/rocketmq/nsaddr4client-internet"
-    })
+    }),
+    logs: []
 };
+
+OriginalLog.on("data", function(data) {
+    module.exports.logs.push(data);
+});
