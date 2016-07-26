@@ -1,9 +1,8 @@
-﻿#ifndef __ONSFACTORY_H_
+#ifndef __ONSFACTORY_H_
 #define __ONSFACTORY_H_
 
 #include "Producer.h"
 #include "TransactionProducer.h"
-//#include "PullConsumer.h"
 #include "PushConsumer.h"
 #include "ONSChannel.h"
 #include "LocalTransactionChecker.h"
