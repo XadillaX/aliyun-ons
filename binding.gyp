@@ -8,11 +8,13 @@
                 "src/consumer_ack.cpp",
                 "src/consumer.cpp",
                 "src/producer.cpp",
-                "src/consumer_listener.cpp"
+                "src/consumer_listener.cpp",
+                "src/third_party/sole/sole.cpp"
             ],
 
             "include_dirs": [
                 "src/third_party/include",
+                "src/third_party/sole",
                 "<!(node -e \"require('nan')\")"
             ],
 
