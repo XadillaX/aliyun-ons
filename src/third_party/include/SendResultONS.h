@@ -1,4 +1,4 @@
-﻿#ifndef __SENDRESULTONS_H__
+#ifndef __SENDRESULTONS_H__
 #define __SENDRESULTONS_H__
 
 #include "ONSClient.h"

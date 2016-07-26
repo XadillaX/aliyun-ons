@@ -1,4 +1,4 @@
-﻿#ifndef __ONSCHANNEL_H__
+#ifndef __ONSCHANNEL_H__
 #define __ONSCHANNEL_H__
 
 namespace ons

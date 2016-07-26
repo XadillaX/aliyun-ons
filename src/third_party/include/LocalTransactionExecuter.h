@@ -1,4 +1,4 @@
-﻿#ifndef __LOCALTRANSACTIONEXECUTER_H__
+#ifndef __LOCALTRANSACTIONEXECUTER_H__
 #define __LOCALTRANSACTIONEXECUTER_H__
 
 #include "Message.h"
@@ -8,6 +8,7 @@ namespace ons{
     class LocalTransactionExecuter{
         public:
             virtual TransactionStatus  execute(Message& msg) =0;
+            virtual ~LocalTransactionExecuter(){}
     };
 }
 

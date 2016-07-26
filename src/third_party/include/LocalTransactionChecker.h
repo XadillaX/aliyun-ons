@@ -1,4 +1,4 @@
-﻿#ifndef __LOCALTRANSACTIONCHECKER_H__
+#ifndef __LOCALTRANSACTIONCHECKER_H__
 #define __LOCALTRANSACTIONCHECKER_H__
 
 #include "Message.h"
@@ -8,6 +8,7 @@ namespace ons{
     class LocalTransactionChecker {
         public:
             virtual TransactionStatus  check(Message& msg) =0;
+            virtual ~LocalTransactionChecker() {}
     };
 }
 

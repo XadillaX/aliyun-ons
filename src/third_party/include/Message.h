@@ -1,4 +1,4 @@
-﻿#ifndef __MESSAGE_H__
+#ifndef __MESSAGE_H__
 #define __MESSAGE_H__
 
 #include <map>
