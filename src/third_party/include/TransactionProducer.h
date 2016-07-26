@@ -1,4 +1,4 @@
-﻿#ifndef __TRANSACTIONPRODUCER_H__
+#ifndef __TRANSACTIONPRODUCER_H__
 #define __TRANSACTIONPRODUCER_H__
 
 #include "LocalTransactionExecuter.h"
