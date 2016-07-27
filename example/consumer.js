@@ -9,6 +9,12 @@
 var config = require("../test/_config");
 var Consumer = require("../lib/consumer");
 
+if(process.env.NODE_ONS_LOG === "true") {
+    require("../lib/orig_log").on("data", function(data) {
+        console.log("[ORIG]", data);
+    });
+}
+
 var consumer = new Consumer(
     config.consumerId,
     config.topic,

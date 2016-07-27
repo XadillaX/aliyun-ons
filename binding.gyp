@@ -8,13 +8,11 @@
                 "src/consumer_ack.cpp",
                 "src/consumer.cpp",
                 "src/producer.cpp",
-                "src/consumer_listener.cpp",
-                "src/third_party/sole/sole.cpp"
+                "src/consumer_listener.cpp"
             ],
 
             "include_dirs": [
                 "src/third_party/include",
-                "src/third_party/sole",
                 "<!(node -e \"require('nan')\")"
             ],
 
@@ -32,6 +30,8 @@
                     }
                 }],
                 ["OS==\"linux\"", {
+                    "sources": [ "src/third_party/sole/sole.cpp" ],
+                    "include_dirs": [ "src/third_party/sole" ],
                     "libraries": [
                         "../src/third_party/lib/linux/libonsclient4cpp.a"
                     ],

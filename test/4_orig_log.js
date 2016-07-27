@@ -19,6 +19,9 @@ describe("#original log", function() {
     ];
 
     it("should produce right logs", function(done) {
+        // windows has no log event so far
+        if(process.platform === "win32") return this.skip();
+        
         var result = [];
         setTimeout(function() {
             var currentPrepareIdx = 0;

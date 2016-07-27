@@ -15,8 +15,12 @@
  *
  * =====================================================================================
  */
+#ifndef WIN32
 #include <unistd.h>
 #include <sole.hpp>
+#else
+#include <io.h>
+#endif
 
 #include "producer.h"
 #include "ONSClientException.h"
@@ -149,12 +153,18 @@ NAN_METHOD(ONSProducerV8::Start)
 
     if(need_get_log)
     {
-        stdout_fd = dup(STDOUT_FILENO);
+#ifdef WIN32
+        // windows has no log console
+        u4 = "";
+#else
         u4 = sole::uuid4().str();
-        freopen(("./.ons-" + u4 + ".log").c_str(), "w", stdout);
+		stdout_fd = dup(STDOUT_FILENO);
+		freopen(("./.ons-" + u4 + ".log").c_str(), "w", stdout);
+#endif
     }
 
     ons->initializing = true;
+
     AsyncQueueWorker(new ProducerPrepareWorker(cb, *ons, u4, stdout_fd));
 }
 

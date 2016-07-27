@@ -48,11 +48,15 @@ public:
         Nan::HandleScope scope;
 
         if(uuid != "")
-        {
-            fclose(stdout);
+		{
+#ifdef WIN32
+            // windows has no log console
+#else
+			fclose(stdout);
             dup2(stdout_fd, STDOUT_FILENO);
             stdout = fdopen(STDOUT_FILENO, "w");
             close(stdout_fd);
+#endif
         }
 
         ons.real_consumer = real_consumer;
