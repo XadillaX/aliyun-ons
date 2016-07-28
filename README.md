@@ -91,7 +91,7 @@ consumer.stop(function() {
 });
 ```
 
-> **Caution:** You should `ack` all received messages (whether `done(true)` or `done(false)`) before you call `consumer.stop()`, or you won't get callback function called in `stop` and consumer won't be stopped.
+> **CAUTION:** You should `ack` all received messages (whether `done(true)` or `done(false)`) before you call `consumer.stop()`, or you won't get callback function called in `stop` and consumer won't be stopped.
 >
 > **What's more, you'd better to stop consumer before your program exited. e.g.**
 >
@@ -159,7 +159,7 @@ producer.stop(function() {
 });
 ```
 
-> **Caution:** you'd better to stop producer before your program exited. e.g.
+> **CAUTION:** you'd better to stop producer before your program exited. e.g.
 >
 > ```javascript
 > process.on("SIGINT", function() {
@@ -170,6 +170,31 @@ producer.stop(function() {
 > ```
 >
 > You should write down your exit code in your own scene.
+
+### Original Logs
+
+> **This feature is available under Linux so far.**
+
+By default C++ ONS SDK will generate a log file under `/home/YOUR_USER_NAME/logs/metaq-client4cpp/`. So we create a
+tail stream to watch it.
+
+```javascript
+const log = require("ons").OriginalLog;
+log.on("data", function(data) {
+    console.log("[ORIG LOG]", data);
+});
+
+// [ORIG LOG] ... register sendMessageHook success,hookname is OnsSendMessageHook ...
+// ...
+// [ORIG LOG] ... egister consumeMessageHook success,hookname is OnsConsumerMessageHook ...
+// ...
+// [ORIG LOG] ... hutdown producerl successfully ...
+// ...
+// [ORIG LOG] ... hutdown pushConsumer successfully ...
+// ...
+```
+
+> **HINT:** C++ ONS SDK will create only one log file per process, so `OriginalLog` is a singleton.
 
 ## About Memory
 
