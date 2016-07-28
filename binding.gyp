@@ -22,8 +22,10 @@
                     "cflags_cc!": [ "-fno-exceptions", "-pthread", "-Wl,--no-as-needed", "-ldl" ],
                     "cflags_cc": [ "-Wno-ignored-qualifiers" ],
                     "cflags": [ "-std=c++11", "-stdlib=libc++" ],
+                    "sources": [ "src/third_party/sole/sole.cpp" ],
                     "include_dirs": [
-                        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"
+                        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1",
+                        "src/third_party/sole"
                     ],
                     "xcode_settings": {
                         "GCC_ENABLE_CPP_EXCEPTIONS": "YES"
