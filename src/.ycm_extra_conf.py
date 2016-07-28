@@ -55,6 +55,10 @@ flags = [
     '-I',
     '/Users/xadillax/Vagrantfile/fuck-ons/node/ons-subscriber/src/third_party/include',
 
+    # UUID
+    '-I',
+    '/Users/xadillax/Vagrantfile/fuck-ons/node/ons-subscriber/src/third_party/sole',
+
     # YU BIAN YI CAN SHU
 
     # PRETENT I'M iojs 3.0

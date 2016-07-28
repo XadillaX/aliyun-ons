@@ -173,6 +173,32 @@ producer.stop(function() {
 >
 > 不过这段代码要视你自己代码的情况而写，只是个例子而已。
 
+### 原始日志
+
+> **该特性目前只在 Linux 下实现。**
+
+C++ ONS SDK 会在 `/home/YOUR_USER_NAME/logs/metaq-client4cpp/` 目录下生成它的源日志，所以我们创建了一个 `tail stream`
+来监视它。
+
+```javascript
+const log = require("ons").OriginalLog;
+log.on("data", function(data) {
+    console.log("[ORIG LOG]", data);
+});
+
+// [ORIG LOG] ... register sendMessageHook success,hookname is OnsSendMessageHook ...
+// ...
+// [ORIG LOG] ... egister consumeMessageHook success,hookname is OnsConsumerMessageHook ...
+// ...
+// [ORIG LOG] ... hutdown producerl successfully ...
+// ...
+// [ORIG LOG] ... hutdown pushConsumer successfully ...
+// ...
+```
+
+> **提示：**C++ ONS SDK 在一个进程中只会创建一个日志文件，所以 `OriginalLog` 是一个单件（Singleton）。
+
+
 ## 关于内存
 
 如果你的 ONS 队列堆积了一大堆消息在服务器，那么你的本地程序就会因不断去服务器拉消息而内存暴涨。

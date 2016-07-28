@@ -30,6 +30,8 @@
                     }
                 }],
                 ["OS==\"linux\"", {
+                    "sources": [ "src/third_party/sole/sole.cpp" ],
+                    "include_dirs": [ "src/third_party/sole" ],
                     "libraries": [
                         "../src/third_party/lib/linux/libonsclient4cpp.a"
                     ],

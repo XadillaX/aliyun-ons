@@ -8,5 +8,7 @@
 
 module.exports = {
     Consumer: require("./lib/consumer"),
-    Producer: require("./lib/producer")
+    Producer: require("./lib/producer"),
+
+    OriginalLog: require("./lib/orig_log")
 };

@@ -4,7 +4,7 @@
   "description": "SDK of Node.js for Aliyun ONS (Aliyun Open Notification Service).",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/_mocha test/1_producer.js test/2_consumer.js test/3_thicken.js"
+    "test": "./node_modules/.bin/_mocha test/1_producer.js test/2_consumer.js test/3_thicken.js test/4_orig_log.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/XadillaX/aliyun-ons#readme",
   "dependencies": {
+    "lei-stream": "^1.2.0",
     "nan": "^2.4.0"
   },
   "devDependencies": {
