@@ -22,6 +22,7 @@
 #include <io.h>
 #endif
 
+#include "log_util.h"
 #include "producer.h"
 #include "ONSClientException.h"
 
@@ -153,14 +154,7 @@ NAN_METHOD(ONSProducerV8::Start)
 
     if(need_get_log)
     {
-#ifdef WIN32
-        // windows has no log console
-        u4 = "";
-#else
-        u4 = sole::uuid4().str();
-		stdout_fd = dup(STDOUT_FILENO);
-		freopen(("./.ons-" + u4 + ".log").c_str(), "w", stdout);
-#endif
+        ONSStartRedirectStd(&stdout_fd, &u4);
     }
 
     ons->initializing = true;

@@ -22,6 +22,7 @@
 #include <io.h>
 #endif
 
+#include "log_util.h"
 #include "consumer.h"
 #include "consumer_ack.h"
 #include "consumer_listener.h"
@@ -195,14 +196,7 @@ NAN_METHOD(ONSConsumerV8::Prepare)
 
     if(need_get_log)
     {
-#ifdef WIN32
-        // windows has no log console
-        u4 = "";
-#else
-        u4 = sole::uuid4().str();
-        stdout_fd = dup(STDOUT_FILENO);
-        freopen(("./.ons-" + u4 + ".log").c_str(), "w", stdout);
-#endif
+        ONSStartRedirectStd(&stdout_fd, &u4);
     }
 
     AsyncQueueWorker(new ConsumerPrepareWorker(cb, *ons, u4, stdout_fd));

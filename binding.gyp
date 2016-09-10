@@ -8,7 +8,8 @@
                 "src/consumer_ack.cpp",
                 "src/consumer.cpp",
                 "src/producer.cpp",
-                "src/consumer_listener.cpp"
+                "src/consumer_listener.cpp",
+                "src/log_util.cpp"
             ],
 
             "include_dirs": [
