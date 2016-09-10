@@ -1,6 +1,6 @@
 {
   "name": "ons",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "SDK of Node.js for Aliyun ONS (Aliyun Open Notification Service).",
   "main": "index.js",
   "scripts": {
