@@ -18,7 +18,7 @@ describe("#consumer", function() {
     var message = [];
     var leftReconsume = true;
 
-    this.timeout(0);
+    this.timeout(1000);
 
     function listener(_message, _ack) {
         // console.log(_message, _ack);
@@ -127,5 +127,12 @@ describe("#consumer", function() {
         }
 
         setTimeout(verify, 500);
+    });
+
+    it("should use default options", function(done) {
+        const consumer = new require("../").Consumer(config.consumerId, config.topic, "*", config.accessKey, config.secretKey);
+        consumer.stop(function() {
+            done();
+        });
     });
 });
