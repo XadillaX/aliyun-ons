@@ -130,7 +130,8 @@ describe("#consumer", function() {
     });
 
     it("should use default options", function(done) {
-        const consumer = new require("../").Consumer(
+        const Consumer = require("../").Consumer;
+        const consumer = new Consumer(
             config.consumerId,
             config.topic,
             "*",
