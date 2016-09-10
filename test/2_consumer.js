@@ -18,7 +18,7 @@ describe("#consumer", function() {
     var message = [];
     var leftReconsume = true;
 
-    this.timeout(1000);
+    this.timeout(0);
 
     function listener(_message, _ack) {
         // console.log(_message, _ack);
@@ -130,7 +130,13 @@ describe("#consumer", function() {
     });
 
     it("should use default options", function(done) {
-        const consumer = new require("../").Consumer(config.consumerId, config.topic, "*", config.accessKey, config.secretKey);
+        const consumer = new require("../").Consumer(
+            config.consumerId,
+            config.topic,
+            "*",
+            config.accessKey,
+            config.secretKey);
+
         consumer.stop(function() {
             done();
         });

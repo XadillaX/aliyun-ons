@@ -26,10 +26,8 @@ ONSOptions::ONSOptions()
     namesrv_addr = "";
 }
 
-ONSOptions::ONSOptions(v8::Local<v8::Value> value)
+ONSOptions::ONSOptions(v8::Local<v8::Value> value) : ONSOptions()
 {
-    ONSOptions();
-
     if(value->IsObject())
     {
         Nan::HandleScope scope;
@@ -49,7 +47,7 @@ ONSOptions::ONSOptions(v8::Local<v8::Value> value)
         {
             thread_num = v8_thread_num->ToInt32()->Value();
         }
-      
+
         if(v8_send_msg_timeout_millis->IsInt32())
         {
             send_msg_timeout_millis = v8_send_msg_timeout_millis->ToInt32()->Value();
