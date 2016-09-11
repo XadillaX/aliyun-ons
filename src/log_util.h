@@ -19,6 +19,7 @@
 #define __LOG_UTIL_H__
 #include <string>
 using namespace std;
-void ONSStartRedirectStd(int* fd, string* u4);
-void ONSStartResumeStd(int fd);
+
+void ONSStartRedirectStd(int* stdout_fd, string* u4);
+void ONSStartResumeStd(int stdout_fd);
 #endif

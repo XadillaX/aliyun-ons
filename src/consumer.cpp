@@ -80,6 +80,12 @@ ONSConsumerV8::ONSConsumerV8(
                 ONSFactoryProperty::ConsumeThreadNums,
                 std::to_string(_options.thread_num).c_str());
     }
+    else
+    {
+        // to fix https://github.com/XadillaX/aliyun-ons/issues/17
+        factory_info.setFactoryProperty(
+                ONSFactoryProperty::ConsumeThreadNums, "1");
+    }
 
     if(consumer_env_v == "true")
     {

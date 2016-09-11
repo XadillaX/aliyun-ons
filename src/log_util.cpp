@@ -33,12 +33,12 @@ int ______ = uv_mutex_init(&m);
 bool __log_redirected = false;
 bool __log_resumed = false;
 
-void ONSStartRedirectStd(int* fd, string* u4)
+void ONSStartRedirectStd(int* stdout_fd, string* u4)
 {
     uv_mutex_lock(&m);
     if(__log_redirected)
     {
-        *fd = 0;
+        *stdout_fd = 0;
         *u4 = "";
         uv_mutex_unlock(&m);
         return;
@@ -47,20 +47,24 @@ void ONSStartRedirectStd(int* fd, string* u4)
 #ifdef WIN32
     // windows has no log console
     *u4 = "";
+    *stdout_fd = 0;
 #else
+    *u4 = sole::uuid4().str();
+
     if(log_util_env_v == "true")
     {
-        printf("[.] ./ons-%s.log redirected", u4->c_str());
+        printf("[.] .ons-%s.log redirected\n", u4->c_str());
     }
-    *u4 = sole::uuid4().str();
-    *fd = dup(STDOUT_FILENO);
+
+    *stdout_fd = dup(STDOUT_FILENO);
     freopen(("./.ons-" + *u4 + ".log").c_str(), "w", stdout);
     __log_redirected = true;
 #endif
+
     uv_mutex_unlock(&m);
 }
 
-void ONSStartResumeStd(int fd)
+void ONSStartResumeStd(int stdout_fd)
 {
     uv_mutex_lock(&m);
 
@@ -73,16 +77,16 @@ void ONSStartResumeStd(int fd)
 #ifdef WIN32
     // windows has no log console
 #else
+    fclose(stdout);
+    dup2(stdout_fd, STDOUT_FILENO);
+    stdout = fdopen(STDOUT_FILENO, "w");
+    close(stdout_fd);
+    __log_resumed = true;
     if(log_util_env_v == "true")
     {
-        printf("[.] stdout resumed");
+        fprintf(stdout, "[.] stdout resumed\n");
     }
-
-    fclose(stdout);
-    dup2(fd, STDOUT_FILENO);
-    stdout = fdopen(STDOUT_FILENO, "w");
-    close(fd);
-    __log_resumed = true;
 #endif
+
     uv_mutex_unlock(&m);
 }

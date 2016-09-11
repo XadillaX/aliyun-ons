@@ -22,13 +22,13 @@
 
 class ProducerPrepareWorker : public Nan::AsyncWorker {
 public:
-    ProducerPrepareWorker(Nan::Callback* callback, ONSProducerV8& ons, string u4, int stdout_fd) :
+    ProducerPrepareWorker(Nan::Callback* callback, ONSProducerV8& ons, string u4, int _stdout_fd) :
         AsyncWorker(callback),
         ons(ons),
-        factory_info(ons.factory_info),
-        uuid(u4),
-        stdout_fd(stdout_fd)
+        factory_info(ons.factory_info)
     {
+        uuid = u4;
+        stdout_fd = _stdout_fd;
     }
 
     ~ProducerPrepareWorker() {}

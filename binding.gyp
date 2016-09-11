@@ -4,12 +4,12 @@
             "target_name": "ons",
             "sources": [
                 "src/entry.cpp",
+                "src/log_util.cpp",
                 "src/ons_options.cpp",
                 "src/consumer_ack.cpp",
                 "src/consumer.cpp",
                 "src/producer.cpp",
-                "src/consumer_listener.cpp",
-                "src/log_util.cpp"
+                "src/consumer_listener.cpp"
             ],
 
             "include_dirs": [
