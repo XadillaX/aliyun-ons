@@ -5,13 +5,6 @@ install:
   - export CXX="g++-4.8" CXX="gcc-4.8"
   - export NODE_ONS_LOG=true
   - npm install
-before_install:
-  - sudo apt-get install python-software-properties -y
-  - sudo add-apt-repository ppa:git-core/ppa
-  - sudo apt-get update
-  - curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-  - sudo apt-get install git-lfs
-  - git lfs install
 addons:
   apt:
     sources:
