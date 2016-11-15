@@ -1,4 +1,5 @@
 install:
+  - git submodule update --init --recursive
   - ps: Install-Product node 4
   - npm -g install npm@next
   - npm install
