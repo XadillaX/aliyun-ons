@@ -5,6 +5,8 @@ Release
 .project
 .ropeproject
 .DS_Store
+.git
 test/
 build
 test/_config.js
+*.sw*
