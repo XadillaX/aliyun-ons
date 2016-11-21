@@ -1,6 +1,6 @@
 {
   "name": "ons",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "SDK of Node.js for Aliyun ONS (Aliyun Open Notification Service).",
   "main": "index.js",
   "scripts": {
@@ -11,8 +11,25 @@
     "url": "git+https://github.com/XadillaX/aliyun-ons.git"
   },
   "files": [
-    "./src/third_party/lib/linux",
-    "./src/third_party/lib/windows"
+    "./src/third_party/lib/linux/libonsclient4cpp.a",
+    "./src/third_party/lib/windows/msvcp120.dll",
+    "./src/third_party/lib/windows/msvcr120.dll",
+    "./src/third_party/lib/windows/32x/ONSClient4CPP.dll",
+    "./src/third_party/lib/windows/32x/ONSClient4CPP.lib",
+    "./src/third_party/lib/windows/32x/ONSClient4CPP.pdb",
+    "./src/third_party/lib/windows/64x/ONSClient4CPP.dll",
+    "./src/third_party/lib/windows/64x/ONSClient4CPP.lib",
+    "./src/third_party/lib/windows/64x/ONSClient4CPP.pdb",
+
+    "./example",
+    "./lib",
+    "./src",
+    "./test",
+    "./binding.gyp",
+    "./index.js",
+    "./package.json",
+    "./README.md",
+    "./README-zh_cn.md"
   ],
   "keywords": [
     "ons",
