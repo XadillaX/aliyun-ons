@@ -4,13 +4,12 @@
 #include "Message.h"
 #include "TransactionStatus.h"
 
-namespace ons{
-    class LocalTransactionChecker {
-        public:
-            virtual TransactionStatus  check(Message& msg) =0;
-            virtual ~LocalTransactionChecker() {}
-    };
+namespace ons {
+class LocalTransactionChecker {
+ public:
+  virtual TransactionStatus check(Message& msg) = 0;
+  virtual ~LocalTransactionChecker() {}
+};
 }
 
 #endif
-

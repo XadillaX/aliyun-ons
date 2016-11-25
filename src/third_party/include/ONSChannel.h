@@ -1,17 +1,9 @@
 #ifndef __ONSCHANNEL_H__
 #define __ONSCHANNEL_H__
 
-namespace ons
-{
+namespace ons {
 
-    enum ONSChannel 
-    {
-        CLOUD,
-        ALIYUN,
-        ALL
-    };
-
+enum ONSChannel { CLOUD, ALIYUN, ALL };
 }
-
 
 #endif
