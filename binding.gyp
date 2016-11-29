@@ -41,18 +41,14 @@
           "cflags": [ "-std=c++11" ]
         }],
         ["OS==\"win\"", {
-          "conditions": [
-            ["target_arch==\"x64\"", {
-              "libraries": [
-                "../src/third_party/lib/windows/ONSClient4CPP.lib"
-              ],
-              "copies": [
-                {
-                  "destination": "<(module_root_dir)/build/Release/",
-                  "files": [ "<(module_root_dir)/src/third_party/lib/windows/ONSClient4CPP.dll" ]
-                }
-              ]
-            }]
+          "libraries": [
+            "../src/third_party/lib/windows/ONSClient4CPP.lib"
+          ],
+          "copies": [
+            {
+              "destination": "<(module_root_dir)/build/Release/",
+              "files": [ "<(module_root_dir)/src/third_party/lib/windows/ONSClient4CPP.dll" ]
+            }
           ]
         }]
       ]
