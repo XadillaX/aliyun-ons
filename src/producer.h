@@ -65,5 +65,6 @@ public:
     friend class ProducerPrepareWorker;
     friend class ProducerSendWorker;
     friend class ProducerStopWorker;
+    friend void PrdrSendingOneWay(uv_work_t* req);
 };
 #endif

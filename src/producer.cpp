@@ -28,6 +28,7 @@
 
 #include "producer_workers/producer_prepare_worker.h"
 #include "producer_workers/producer_send_worker.h"
+#include "producer_workers/producer_oneway.h"
 #include "producer_workers/producer_stop_worker.h"
 
 std::string producer_env_v = std::getenv("NODE_ONS_LOG") == NULL ?
@@ -173,7 +174,9 @@ NAN_METHOD(ONSProducerV8::Send)
 {
     ONSProducerV8* ons = ObjectWrap::Unwrap<ONSProducerV8>(info.Holder());
 
-    Nan::Callback* cb = new Nan::Callback(info[5].As<v8::Function>());
+    Nan::Callback* cb = (info[5]->IsUndefined() || info[5]->IsNull()) ?
+            NULL :
+            new Nan::Callback(info[5].As<v8::Function>());
 
     // if it's not initialized or not started, throw an error
     if(!ons->inited || !ons->started)
@@ -189,6 +192,13 @@ NAN_METHOD(ONSProducerV8::Send)
     v8::String::Utf8Value v8_key(info[2]->ToString());
     v8::String::Utf8Value v8_content(info[3]->ToString());
     int64_t send_at = info[4]->IntegerValue();
+
+    if(!cb)
+    {
+        // Send Oneway
+        PrdrSendOneWay(*ons, *v8_topic, *v8_tags, *v8_key, *v8_content, send_at);
+        return;
+    }
 
     AsyncQueueWorker(new ProducerSendWorker(cb, *ons, *v8_topic, *v8_tags, *v8_key, *v8_content, send_at));
 }
