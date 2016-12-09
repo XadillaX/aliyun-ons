@@ -23,6 +23,8 @@ module.exports = {
     logs: []
 };
 
-OriginalLog.on("data", function(data) {
-    module.exports.logs.push(data);
-});
+if(process.platform !== "win32") {
+    OriginalLog.on("data", function(data) {
+        module.exports.logs.push(data);
+    });
+}
