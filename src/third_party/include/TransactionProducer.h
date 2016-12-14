@@ -2,9 +2,10 @@
 #define __TRANSACTIONPRODUCER_H__
 
 #include "LocalTransactionExecuter.h"
+#include "ONSClient.h"
 
 namespace ons {
-class TransactionProducer {
+class ONSCLIENT_API TransactionProducer {
  public:
   TransactionProducer() {}
   virtual ~TransactionProducer() {}

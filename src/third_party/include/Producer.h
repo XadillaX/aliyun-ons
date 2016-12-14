@@ -2,14 +2,14 @@
 #define __PRODUCER_H__
 
 #include "Message.h"
-#include "ONSCallback.h"
 #include "SendResultONS.h"
+#include "ONSClientException.h"
 
 namespace ons {
 
-class ONSCLIENT_API Producer {
+class  ONSCLIENT_API Producer {
  public:
-  Producer() {}
+  Producer()  {}
   virtual ~Producer() {}
 
   // before send msg, start must be called to allocate resources.
@@ -19,13 +19,13 @@ class ONSCLIENT_API Producer {
   virtual void shutdown() = 0;
   // retry max 3 times if send failed. if no exception throwed, it sends
   // success;
-  virtual SendResultONS send(Message& msg) = 0;
+  virtual ons::SendResultONS send(Message& msg) throw(ons::ONSClientException) = 0;
 
   // async send
-  virtual void sendAsync(Message& msg, SendCallbackONS* callback) = 0;
+ // virtual void sendAsync(Message& msg, ons::SendCallbackONS* callback) throw(ons::ONSClientException) = 0;
 
   // oneway send
-  virtual void sendOneway(Message& msg) = 0;
+  virtual void sendOneway(Message& msg) throw(ons::ONSClientException) = 0;
 };
 }
 #endif

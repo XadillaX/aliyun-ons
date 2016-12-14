@@ -5,26 +5,26 @@
 #include <sstream>
 #include <vector>
 #include "ONSClient.h"
+
 namespace ons {
 
-class ONSCLIENT_API SystemPropKey {
+class  SystemPropKey {
  public:
   SystemPropKey() {}
   ~SystemPropKey() {}
-  static CONSTSTRING TAG;
-  static CONSTSTRING KEY;
-  static CONSTSTRING MSGID;
-  static CONSTSTRING RECONSUMETIMES;
-  static CONSTSTRING STARTDELIVERTIME;
+  static const char* TAG;
+  static const char* KEY;
+  static const char* MSGID;
+  static const char* RECONSUMETIMES;
+  static const char* STARTDELIVERTIME;
 };
 
-//<!***************************************************************************
-class ONSCLIENT_API Message {
+class  ONSCLIENT_API Message {
  public:
   Message();
-  Message(CONSTSTRING topic, CONSTSTRING tags, CONSTSTRING body);
-  Message(CONSTSTRING topic, CONSTSTRING tags, CONSTSTRING keys,
-          CONSTSTRING body);
+  Message(const char* topic, const char* tags, const char* body);
+  Message(const char* topic, const char* tags, const char* keys,
+		const char* body);
 
   virtual ~Message();
 
@@ -33,35 +33,35 @@ class ONSCLIENT_API Message {
 
   // userProperties was used to save user specific parameters which doesn't
   // belong to SystemPropKey
-  void putUserProperties(CONSTSTRING key, CONSTSTRING value);
-  CONSTSTRING getUserProperties(CONSTSTRING key) const;
+  void putUserProperties(const char* key, const char* value);
+	const char* getUserProperties(const char* key) const;
   void setUserProperties(std::map<std::string, std::string>& userProperty);
   std::map<std::string, std::string> getUserProperties() const;
 
   // systemProperties only save parameters defined in SystemPropKey, please do
   // not add other parameters into systemProperties, else it was not saved.
-  void putSystemProperties(CONSTSTRING key, CONSTSTRING value);
-  CONSTSTRING getSystemProperties(CONSTSTRING key) const;
+  void putSystemProperties(const char* key, const char* value);
+	const char* getSystemProperties(const char* key) const;
   void setSystemProperties(std::map<std::string, std::string>& systemProperty);
   std::map<std::string, std::string> getSystemProperties() const;
 
-  CONSTSTRING getTopic() const;
-  void setTopic(CONSTSTRING topic);
+	const char* getTopic() const;
+  void setTopic(const char* topic);
 
-  CONSTSTRING getTag() const;
-  void setTag(CONSTSTRING tags);
+	const char* getTag() const;
+  void setTag(const char* tags);
 
-  CONSTSTRING getKey() const;
-  void setKey(CONSTSTRING keys);
+	const char* getKey() const;
+  void setKey(const char* keys);
 
-  CONSTSTRING getMsgID() const;
-  void setMsgID(CONSTSTRING msgId);
+	const char* getMsgID() const;
+  void setMsgID(const char* msgId);
 
   const long long getStartDeliverTime() const;
   void setStartDeliverTime(long long level);
 
-  CONSTSTRING getBody() const;
-  void setBody(CONSTSTRING msgbody);
+	const char* getBody() const;
+  void setBody(const char* msgbody);
 
   const int getReconsumeTimes() const;
   void setReconsumeTimes(int reconsumeTimes);
@@ -86,7 +86,6 @@ class ONSCLIENT_API Message {
   std::map<std::string, std::string> systemProperties;
   std::map<std::string, std::string> userProperties;
 };
-//<!***************************************************************************
 
 }  //<!end namespace;
 #endif

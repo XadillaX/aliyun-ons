@@ -8,86 +8,89 @@
 #include "Producer.h"
 #include "PushConsumer.h"
 #include "TransactionProducer.h"
+#include "ONSClientException.h"
 
 namespace ons {
-class ONSCLIENT_API ONSFactoryProperty {
+class  ONSCLIENT_API ONSFactoryProperty {
  public:
   ONSFactoryProperty();
   virtual ~ONSFactoryProperty();
   bool checkValidityOfFactoryProperties(const std::string& key,
-                                        const std::string& value);
+                                        const std::string& value) throw(ons::ONSClientException);
+  const char* getLogPath();
   void setSendMsgTimeout(const int value);
   void setSendMsgRetryTimes(const int value);
   void setMaxMsgCacheSize(const int size);
   void setOnsTraceSwitch(bool onswitch);
-  void setOnsChannel(ONSChannel onsChannel);
-  void setFactoryProperty(CONSTSTRING& key, CONSTSTRING value);
+  void setOnsChannel(ONSChannel onsChannel) throw(ons::ONSClientException);
+  void setFactoryProperty(const char* key, const char* value) throw(ons::ONSClientException);
   void setFactoryProperties(
       std::map<std::string, std::string> factoryProperties);
   std::map<std::string, std::string> getFactoryProperties() const;
-  CONSTSTRING getProducerId() const;
-  CONSTSTRING getConsumerId() const;
-  CONSTSTRING getPublishTopics() const;
-  CONSTSTRING getMessageModel() const;
+	const char* getProducerId() const;
+	const char* getConsumerId() const;
+	const char* getPublishTopics() const;
+	const char* getMessageModel() const;
   const int getSendMsgTimeout() const;
   const int getSendMsgRetryTimes() const;
   const int getConsumeThreadNums() const;
   const int getMaxMsgCacheSize() const;
   const ONSChannel getOnsChannel() const;
-  CONSTSTRING getChannel() const;
-  CONSTSTRING getMessageContent() const;
-  CONSTSTRING getNameSrvAddr() const;
-  CONSTSTRING getNameSrvDomain() const;
-  CONSTSTRING getAccessKey() const;
-  CONSTSTRING getSecretKey() const;
+	const char* getChannel() const;
+	const char* getMessageContent() const;
+	const char* getNameSrvAddr() const;
+	const char* getNameSrvDomain() const;
+	const char* getAccessKey() const;
+	const char* getSecretKey() const;
   bool getOnsTraceSwitch() const;
   
  public:
-  static CONSTSTRING ProducerId;
-  static CONSTSTRING ConsumerId;
-  static CONSTSTRING PublishTopics;
-  static CONSTSTRING MsgContent;
-  static CONSTSTRING ONSAddr;
-  static CONSTSTRING AccessKey;
-  static CONSTSTRING SecretKey;
-  static CONSTSTRING MessageModel;
-  static CONSTSTRING BROADCASTING;
-  static CONSTSTRING CLUSTERING;
-  static CONSTSTRING SendMsgTimeoutMillis;
-  static CONSTSTRING NAMESRV_ADDR;
-  static CONSTSTRING ConsumeThreadNums;
-  static CONSTSTRING OnsChannel;
-  static CONSTSTRING MaxMsgCacheSize;
-  static CONSTSTRING OnsTraceSwitch;
-  static CONSTSTRING SendMsgRetryTimes;
+  static const char* LogPath;
+  static const char* ProducerId;
+  static const char* ConsumerId;
+  static const char* PublishTopics;
+  static const char* MsgContent;
+  static const char* ONSAddr;
+  static const char* AccessKey;
+  static const char* SecretKey;
+  static const char* MessageModel;
+  static const char* BROADCASTING;
+  static const char* CLUSTERING;
+  static const char* SendMsgTimeoutMillis;
+  static const char* NAMESRV_ADDR;
+  static const char* ConsumeThreadNums;
+  static const char* OnsChannel;
+  static const char* MaxMsgCacheSize;
+  static const char* OnsTraceSwitch;
+  static const char* SendMsgRetryTimes;
 
  private:
   std::map<std::string, std::string> m_onsFactoryProperties;
 };
 
-class ONSCLIENT_API ONSFactoryAPI {
+class  ONSCLIENT_API ONSFactoryAPI {
  public:
   ONSFactoryAPI();
   virtual ~ONSFactoryAPI();
 
-  virtual Producer* createProducer(ONSFactoryProperty factoryProperty);
-  virtual OrderProducer* createOrderProducer(
-      ONSFactoryProperty factoryProperty);
-  virtual OrderConsumer* createOrderConsumer(
-      ONSFactoryProperty factoryProperty);
-  virtual TransactionProducer* createTransactionProducer(
-      ONSFactoryProperty factoryProperty, LocalTransactionChecker* checker);
-  virtual PushConsumer* createPushConsumer(ONSFactoryProperty factoryProperty);
+  virtual ons::Producer* createProducer(ons::ONSFactoryProperty factoryProperty) throw(ons::ONSClientException);
+  virtual ons::OrderProducer* createOrderProducer(
+      ons::ONSFactoryProperty factoryProperty) throw(ons::ONSClientException);
+  virtual ons::OrderConsumer* createOrderConsumer(
+      ons::ONSFactoryProperty factoryProperty) throw(ons::ONSClientException);
+  virtual ons::TransactionProducer* createTransactionProducer(
+      ons::ONSFactoryProperty factoryProperty, ons::LocalTransactionChecker* checker) throw(ons::ONSClientException);
+  virtual ons::PushConsumer* createPushConsumer(ons::ONSFactoryProperty factoryProperty) throw(ons::ONSClientException);
 };
 
-class ONSCLIENT_API ONSFactory {
+class  ONSCLIENT_API ONSFactory {
  public:
   virtual ~ONSFactory();
-  static ONSFactoryAPI* getInstance();
+  static ons::ONSFactoryAPI* getInstance();
 
  private:
   ONSFactory();
-  static ONSFactoryAPI* onsFactoryInstance;
+  static ons::ONSFactoryAPI* onsFactoryInstance;
 };
 }
 #endif

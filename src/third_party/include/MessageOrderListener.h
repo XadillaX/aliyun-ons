@@ -7,7 +7,7 @@
 
 namespace ons {
 
-class ONSCLIENT_API MessageOrderListener {
+class  MessageOrderListener {
  public:
   MessageOrderListener() {}
   virtual ~MessageOrderListener() {}

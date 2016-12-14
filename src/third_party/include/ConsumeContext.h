@@ -4,7 +4,7 @@
 
 namespace ons {
 
-class ONSCLIENT_API ConsumeContext {
+class  ONSCLIENT_API ConsumeContext {
  public:
   ConsumeContext() {}
   virtual ~ConsumeContext() {}

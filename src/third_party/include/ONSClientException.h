@@ -2,6 +2,7 @@
 #define __ONSCLIENTEXCEPTION_H__
 
 #include <exception>
+#include <string>
 #include "ONSClient.h"
 
 namespace ons {

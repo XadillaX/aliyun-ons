@@ -5,14 +5,14 @@
 
 namespace ons {
 
-class ONSCLIENT_API PushConsumer {
+class  ONSCLIENT_API PushConsumer {
  public:
   PushConsumer() {}
   virtual ~PushConsumer() {}
 
   virtual void start() = 0;
   virtual void shutdown() = 0;
-  virtual void subscribe(CONSTSTRING topic, CONSTSTRING subExpression,
+  virtual void subscribe(const char* topic, const char* subExpression,
                          MessageListener* listener) = 0;
   // virtual void setNamesrvAddr(const std::string& nameSrvAddr) = 0;
 };

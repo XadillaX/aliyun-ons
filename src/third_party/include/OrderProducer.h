@@ -2,7 +2,6 @@
 #define __ORDERLYPRODUCER_H__
 
 #include "Message.h"
-#include "ONSCallback.h"
 #include "SendResultONS.h"
 
 namespace ons {

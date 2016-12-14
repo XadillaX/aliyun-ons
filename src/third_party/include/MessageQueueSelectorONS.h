@@ -2,7 +2,7 @@
 #define _MESSAGEQUEUESELECTOR_H_
 
 #include "Message.h"
-#include "MessageQueueONS"
+#include "MessageQueueONS.h"
 
 namespace ons {
 

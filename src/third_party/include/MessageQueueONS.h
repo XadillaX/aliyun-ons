@@ -14,7 +14,7 @@ class MessageQueueONS {
   MessageQueueONS(const string& topic, const string& brokerName, int queueId);
 
   MessageQueueONS(const MessageQueueONS& other);
-  MessageQueue& operator=(const MessageQueueONS& other);
+  MessageQueueONS& operator=(const MessageQueueONS& other);
 
   string getTopic() const;
   void setTopic(const string& topic);

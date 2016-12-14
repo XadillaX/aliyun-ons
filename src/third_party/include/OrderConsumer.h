@@ -5,14 +5,14 @@
 
 namespace ons {
 
-class ONSCLIENT_API OrderConsumer {
+class  ONSCLIENT_API OrderConsumer {
  public:
   OrderConsumer() {}
   virtual ~OrderConsumer() {}
 
   virtual void start() = 0;
   virtual void shutdown() = 0;
-  virtual void subscribe(CONSTSTRING topic, CONSTSTRING subExpression,
+  virtual void subscribe(const char* topic, const char* subExpression,
                          MessageOrderListener* listener) = 0;
 };
 }

@@ -7,7 +7,7 @@
 
 namespace ons {
 
-class ONSCLIENT_API MessageListener {
+class  ONSCLIENT_API MessageListener {
  public:
   MessageListener() {}
   virtual ~MessageListener() {}

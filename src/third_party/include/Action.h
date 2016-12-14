@@ -1,6 +1,8 @@
 #ifndef __ACTION_H__
 #define __ACTION_H__
 
+#include "ONSClient.h"
+
 // consuming result
 enum Action {
   // consume success, application could continue to consume next message
