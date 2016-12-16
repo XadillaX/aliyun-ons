@@ -17,7 +17,9 @@
  */
 #ifndef __PRODUCER_ONEWAY_H__
 #define __PRODUCER_ONEWAY_H__
+#include "../real_producer_wrapper.h"
 #include "../producer.h"
+using namespace std;
 
 struct PrdrOneWayParam
 {
@@ -47,20 +49,12 @@ inline void PrdrSendingOneWay(uv_work_t* req)
     }
 
     Message msg(param->topic.c_str(), param->tags.c_str(), param->content.c_str());
-    if(param->key != "")
-    {
-        msg.setKey(param->key.c_str());
-    }
-    
-    if(param->send_at != -1)
-    {
-        msg.setStartDeliverTime(param->send_at);
-    }
-
-    Producer* real_producer = ons->real_producer;
+    if(param->key != "") msg.setKey(param->key.c_str());
+    if(param->send_at != -1) msg.setStartDeliverTime(param->send_at);
+    ONSRealProducerWrapper* real_producer = ons->real_producer;
     try
     {
-        real_producer->sendOneway(msg);
+        real_producer->SendOneway(msg);
     }
     catch(const ONSClientException& e)
     {

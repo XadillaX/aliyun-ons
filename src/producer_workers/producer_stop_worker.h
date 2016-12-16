@@ -18,6 +18,7 @@
 #ifndef __PRODUCER_STOP_WORKER_H__
 #define __PRODUCER_STOP_WORKER_H__
 #include "../producer.h"
+using namespace std;
 
 class ProducerStopWorker : public Nan::AsyncWorker {
 public:

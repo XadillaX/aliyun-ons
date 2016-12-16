@@ -29,6 +29,7 @@ public:
     int send_msg_timeout_millis;
     string ons_addr;
     string namesrv_addr;
+    bool order;
 
     ONSOptions();
     ONSOptions(v8::Local<v8::Value> value); 

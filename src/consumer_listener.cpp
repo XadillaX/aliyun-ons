@@ -22,12 +22,6 @@
 std::string consumer_listener_env_v = std::getenv("NODE_ONS_LOG") == NULL ?
         "" : std::getenv("NODE_ONS_LOG");
 
-#ifdef WIN32
-#define GET_UNSAFE_CONST_CHAR(str) str
-#else
-#define GET_UNSAFE_CONST_CHAR(str) str.c_str()
-#endif
-
 ONSListenerV8::ONSListenerV8(ONSConsumerV8* parent) : parent(parent)
 {
     uv_mutex_init(&mutex);
@@ -93,7 +87,7 @@ void ONSListenerV8::RestoreAsync(uv_async_t* async)
 
 Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
 {
-    const char* msg_id = GET_UNSAFE_CONST_CHAR(message.getMsgID());
+    const char* msg_id = message.getMsgID();
 
     ONSConsumerACKInner* ack_inner = new ONSConsumerACKInner(msg_id);
     MessageHandlerParam* param = new MessageHandlerParam();

@@ -24,6 +24,7 @@ ONSOptions::ONSOptions()
     send_msg_timeout_millis = -1;
     ons_addr = "";
     namesrv_addr = "";
+    order = false;
 }
 
 ONSOptions::ONSOptions(v8::Local<v8::Value> value) : ONSOptions()
@@ -42,6 +43,8 @@ ONSOptions::ONSOptions(v8::Local<v8::Value> value) : ONSOptions()
                 Nan::New("onsAddr").ToLocalChecked()).ToLocalChecked();
         v8::Local<v8::Value> v8_namesrv_addr = Nan::Get(v8_options,
                 Nan::New("namesrvAddr").ToLocalChecked()).ToLocalChecked();
+        v8::Local<v8::Value> v8_order = Nan::Get(v8_options,
+                Nan::New("order").ToLocalChecked()).ToLocalChecked();
 
         if(v8_thread_num->IsInt32())
         {
@@ -62,5 +65,7 @@ ONSOptions::ONSOptions(v8::Local<v8::Value> value) : ONSOptions()
         {
             namesrv_addr = *(v8::String::Utf8Value(v8_namesrv_addr));
         }
+
+        order = v8_order->ToBoolean()->IsTrue();
     }
 }
