@@ -9,6 +9,7 @@
         "src/consumer_ack.cpp",
         "src/consumer.cpp",
         "src/producer.cpp",
+        "src/real_producer_wrapper.cpp",
         "src/consumer_listener.cpp"
       ],
       "include_dirs": [
@@ -38,7 +39,7 @@
           ],
           "cflags_cc!": [ "-fno-exceptions", "-pthread", "-Wl,--no-as-needed", "-ldl" ],
           "cflags_cc": [ "-Wno-ignored-qualifiers" ],
-          "cflags": [ "-std=c++11" ]
+          "cflags": [ "-std=c++11", "-g" ]
         }],
         ["OS==\"win\"", {
           "libraries": [
