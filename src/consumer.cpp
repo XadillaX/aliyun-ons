@@ -48,7 +48,8 @@ ONSConsumerV8::ONSConsumerV8(
     real_consumer(NULL),
     listener(NULL),
 
-    listener_func()
+    listener_func(),
+    is_order(false)
 {
     Nan::HandleScope scope;
 

@@ -22,9 +22,9 @@
 #include "consumer_listener/push_consumer_listener.h"
 #include "consumer_listener/order_consumer_listener.h"
 
-ONSRealConsumerListenerWrapper::ONSRealConsumerListenerWrapper(ONSConsumerV8* parent, bool order) :
-    order(order)
+ONSRealConsumerListenerWrapper::ONSRealConsumerListenerWrapper(ONSConsumerV8* parent, bool _order)
 {
+    order = _order;
     real_listener = order ?
         (void*)new ONSOrderConsumerListener(parent) :
         (void*)new ONSPushConsumerListener(parent);
