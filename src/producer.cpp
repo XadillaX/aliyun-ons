@@ -15,19 +15,13 @@
  *
  * =====================================================================================
  */
-#ifndef WIN32
-#include <unistd.h>
-#include <sole.hpp>
-#else
-#include <io.h>
-#endif
-
 #include "log_util.h"
 #include "producer.h"
 #include "ONSClientException.h"
 
 #include "producer_workers/producer_prepare_worker.h"
 #include "producer_workers/producer_send_worker.h"
+#include "producer_workers/producer_oneway.h"
 #include "producer_workers/producer_stop_worker.h"
 
 std::string producer_env_v = std::getenv("NODE_ONS_LOG") == NULL ?
@@ -42,7 +36,8 @@ ONSProducerV8::ONSProducerV8(string _producer_id, string _access_key, string _se
 
     initializing(false),
     inited(false),
-    started(false)
+    started(false),
+    is_order(false)
 {
     factory_info.setFactoryProperty(ONSFactoryProperty::ProducerId, producer_id.c_str());
     factory_info.setFactoryProperty(ONSFactoryProperty::AccessKey, access_key.c_str());
@@ -65,20 +60,24 @@ ONSProducerV8::ONSProducerV8(string _producer_id, string _access_key, string _se
                 std::to_string(_options.send_msg_timeout_millis).c_str());
     }
 
+    if(_options.order)
+    {
+        is_order = true;
+    }
+
+    // log file
+    string log_filename = AliyunONS::GetLogPath();
+    if(log_filename.size())
+    {
+        factory_info.setFactoryProperty(ONSFactoryProperty::LogPath, log_filename.c_str());
+    }
+
     uv_mutex_init(&mutex);
 }
 
 ONSProducerV8::~ONSProducerV8()
 {
     Stop();
-
-    if(real_producer)
-    {
-        real_producer = NULL;
-
-        // needn't delete real_producer
-        // refer to document: https://help.aliyun.com/document_detail/29556.html
-    }
 }
 
 NAN_MODULE_INIT(ONSProducerV8::Init)
@@ -143,23 +142,9 @@ NAN_METHOD(ONSProducerV8::Start)
         return;
     }
 
-    bool need_get_log = false;
-    if(info.Length() > 1)
-    {
-        need_get_log = !info[1]->ToBoolean()->Value();
-    }
-
-    int stdout_fd = 0;
-    string u4 = "";
-
-    if(need_get_log)
-    {
-        ONSStartRedirectStd(&stdout_fd, &u4);
-    }
-
     ons->initializing = true;
 
-    AsyncQueueWorker(new ProducerPrepareWorker(cb, *ons, u4, stdout_fd));
+    AsyncQueueWorker(new ProducerPrepareWorker(cb, *ons, ons->is_order));
 }
 
 NAN_METHOD(ONSProducerV8::Stop)
@@ -173,7 +158,9 @@ NAN_METHOD(ONSProducerV8::Send)
 {
     ONSProducerV8* ons = ObjectWrap::Unwrap<ONSProducerV8>(info.Holder());
 
-    Nan::Callback* cb = new Nan::Callback(info[5].As<v8::Function>());
+    Nan::Callback* cb = (info[6]->IsUndefined() || info[6]->IsNull()) ?
+            NULL :
+            new Nan::Callback(info[6].As<v8::Function>());
 
     // if it's not initialized or not started, throw an error
     if(!ons->inited || !ons->started)
@@ -189,8 +176,17 @@ NAN_METHOD(ONSProducerV8::Send)
     v8::String::Utf8Value v8_key(info[2]->ToString());
     v8::String::Utf8Value v8_content(info[3]->ToString());
     int64_t send_at = info[4]->IntegerValue();
+    v8::String::Utf8Value v8_sharding_key(info[5]->ToString());
 
-    AsyncQueueWorker(new ProducerSendWorker(cb, *ons, *v8_topic, *v8_tags, *v8_key, *v8_content, send_at));
+    if(!cb && !ons->is_order)
+    {
+        // Send Oneway
+        PrdrSendOneWay(*ons, *v8_topic, *v8_tags, *v8_key, *v8_content, send_at);
+        return;
+    }
+
+    AsyncQueueWorker(new ProducerSendWorker(
+                cb, *ons, *v8_topic, *v8_tags, *v8_key, *v8_content, send_at, *v8_sharding_key));
 }
 
 void ONSProducerV8::Stop()
@@ -211,12 +207,10 @@ void ONSProducerV8::Stop()
 
     if(producer_env_v == "true") printf("producer stopping...\n");
 
-    real_producer->shutdown();
+    real_producer->Shutdown();
+    delete real_producer;
     real_producer = NULL;
-
-    // needn't delete real_producer
-    // refer to document: https://help.aliyun.com/document_detail/29556.html
-
+ 
     if(producer_env_v == "true") printf("producer stopped.\n");
 
     started = false;

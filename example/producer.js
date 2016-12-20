@@ -27,6 +27,7 @@ function send() {
             console.log(err, messageId);
             taskObject.done();
         });
+        producer.send(config.topic, "tagA", "单向 " + i);
     }
 
     for(var i = 0; i < 10; i++) {

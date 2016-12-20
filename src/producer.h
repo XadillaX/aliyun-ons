@@ -22,6 +22,7 @@
 #include <string>
 #include <uv.h>
 #include "ONSFactory.h"
+#include "real_producer_wrapper.h"
 using namespace std;
 using namespace ons;
 
@@ -55,9 +56,10 @@ private:
     bool initializing;
     bool inited;
     bool started;
+    bool is_order;
 
     ONSFactoryProperty factory_info;
-    Producer* real_producer;
+    ONSRealProducerWrapper* real_producer;
 
     uv_mutex_t mutex;
 
@@ -65,5 +67,6 @@ public:
     friend class ProducerPrepareWorker;
     friend class ProducerSendWorker;
     friend class ProducerStopWorker;
+    friend void PrdrSendingOneWay(uv_work_t* req);
 };
 #endif

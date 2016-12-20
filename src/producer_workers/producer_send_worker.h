@@ -17,7 +17,9 @@
  */
 #ifndef __PRODUCER_SEND_WORKER_H__
 #define __PRODUCER_SEND_WORKER_H__
+#include "../real_producer_wrapper.h"
 #include "../producer.h"
+using namespace std;
 
 class ProducerSendWorker : public Nan::AsyncWorker {
 public:
@@ -28,18 +30,20 @@ public:
             string _tags,
             string _key,
             string _content,
-            int64_t _send_at) :
+            int64_t _send_at,
+            string _sharding_key) :
         AsyncWorker(callback),
         ons(_ons),
         topic(_topic),
         tags(_tags),
         key(_key),
         content(_content),
-        send_at(_send_at),
 
         errored(false),
         error_msg("")
     {
+        send_at = _send_at;
+        sharding_key = _sharding_key;
     }
 
     ~ProducerSendWorker() {}
@@ -68,11 +72,18 @@ public:
             msg.setStartDeliverTime(send_at);
         }
 
-        Producer* real_producer = ons.real_producer;
+        ONSRealProducerWrapper* real_producer = ons.real_producer;
 
         try
         {
-            send_result = real_producer->send(msg);
+            if(!real_producer->IsOrder())
+            {
+                send_result = real_producer->Send(msg);
+            }
+            else
+            {
+                send_result = real_producer->Send(msg, sharding_key);
+            }
         }
         catch(const ONSClientException& e)
         {
@@ -110,6 +121,7 @@ private:
     string tags;
     string key;
     string content;
+    string sharding_key;
     
     int64_t send_at;
 

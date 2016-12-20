@@ -18,8 +18,13 @@
 #ifndef __LOG_UTIL_H__
 #define __LOG_UTIL_H__
 #include <string>
-using namespace std;
+#include <nan.h>
 
-void ONSStartRedirectStd(int* stdout_fd, string* u4);
-void ONSStartResumeStd(int stdout_fd);
+namespace AliyunONS {
+
+NAN_METHOD(SetLogPath);
+std::string GetLogPath();
+
+}
+
 #endif

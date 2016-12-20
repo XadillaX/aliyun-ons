@@ -17,17 +17,15 @@
  */
 #ifndef __CONSUMER_PREPARE_WORKER_H__
 #define __CONSUMER_PREPARE_WORKER_H__
-#include "../log_util.h"
 #include "../consumer.h"
 
 class ConsumerPrepareWorker : public Nan::AsyncWorker {
 public:
-    ConsumerPrepareWorker(Nan::Callback* callback, ONSConsumerV8& ons, string uuid, int stdout_fd) :
+    ConsumerPrepareWorker(Nan::Callback* callback, ONSConsumerV8& ons, bool order) :
         AsyncWorker(callback),
         ons(ons),
         factory_info(ons.factory_info),
-        uuid(uuid),
-        stdout_fd(stdout_fd)
+        is_order(order)
     {
     }
 
@@ -35,37 +33,31 @@ public:
 
     void Execute()
     {
-        real_consumer = ONSFactory::getInstance()->createPushConsumer(factory_info);
+        real_consumer = new ONSRealConsumerWrapper(factory_info, is_order);
         
         // subscribe
-        real_consumer->subscribe(
+        real_consumer->Subscribe(
                 factory_info.getPublishTopics(),
                 ons.tag.c_str(),
-                ons.listener);
+                ons.listener->GetListener());
     }
 
     void HandleOKCallback()
     {
         Nan::HandleScope scope;
 
-        if(uuid != "")
-		{
-            ONSStartResumeStd(stdout_fd);
-        }
-
         ons.real_consumer = real_consumer;
         ons.initializing = false;
         ons.inited = true;
 
-        v8::Local<v8::Value> argv[2] = { Nan::Undefined(), Nan::New<v8::String>(uuid).ToLocalChecked() };
-        callback->Call(2, argv);
+        callback->Call(0, NULL);
     }
 
 private:
     ONSConsumerV8& ons;
     ONSFactoryProperty& factory_info;
-    PushConsumer* real_consumer;
-    string uuid;
-    int stdout_fd;
+    ONSRealConsumerWrapper* real_consumer;
+
+    bool is_order;
 };
 #endif

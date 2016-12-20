@@ -22,9 +22,12 @@
 #include <string>
 #include <uv.h>
 #include "ONSFactory.h"
+#include "real_consumer_wrapper.h"
+#include "real_consumer_listener_wrapper.h"
 using namespace std;
 using namespace ons;
 
+namespace AliyunONS { class ONSConsumerBaseListener; }
 class PrepareWorker;
 
 class ONSConsumerV8 : public Nan::ObjectWrap {
@@ -68,20 +71,21 @@ private:
     string tag;
     string access_key;
     string secret_key;
+    bool is_order;
 
     bool initializing;
     bool inited;
     bool started;
 
     ONSFactoryProperty factory_info;
-    PushConsumer* real_consumer;
-    MessageListener* listener;
+    ONSRealConsumerWrapper* real_consumer;
+    ONSRealConsumerListenerWrapper* listener;
 
     Nan::Callback listener_func;
 
 public:
     friend class ConsumerPrepareWorker;
     friend class ConsumerStopWorker;
-    friend class ONSListenerV8;
+    friend class AliyunONS::ONSConsumerBaseListener;
 };
 #endif

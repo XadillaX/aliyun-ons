@@ -26,6 +26,11 @@ using namespace std;
 
 extern std::string ack_env_v;
 
+enum COMMON_ACTION {
+    SUCCESS,
+    LATER
+};
+
 class ONSListenerV8;
 class ONSConsumerACKInner {
 public:
@@ -44,7 +49,7 @@ public:
     }
 
 public:
-    void Ack(Action result = Action::CommitMessage)
+    void Ack(COMMON_ACTION result = COMMON_ACTION::SUCCESS)
     {
         uv_mutex_lock(&mutex);
         bool _acked = acked;
@@ -71,7 +76,7 @@ public:
         uv_mutex_unlock(&mutex);
     }
 
-    Action WaitResult()
+    int WaitResult()
     { 
         uv_mutex_lock(&mutex);
 
@@ -81,7 +86,7 @@ public:
         // So we have to return result directly without `uv_cond_wait`
         if(acked)
         {
-            Action result = result;
+            COMMON_ACTION result = ack_result;
             uv_mutex_unlock(&mutex);
 
             return result;
@@ -92,7 +97,7 @@ public:
         // and it will emit `uv_cond_signal` to let it stop wait
         uv_cond_wait(&cond, &mutex);
 
-        Action result = ack_result;
+        COMMON_ACTION result = ack_result;
         uv_mutex_unlock(&mutex);
 
         // write down some debug information
@@ -109,7 +114,7 @@ public:
 private:
     uv_mutex_t mutex;
     uv_cond_t cond;
-    Action ack_result;
+    COMMON_ACTION ack_result;
     bool acked;
 
 public:
@@ -154,7 +159,7 @@ public:
         strcpy(msg_id, inner->msg_id.c_str());
     }
 
-    void Ack(Action result = Action::CommitMessage)
+    void Ack(COMMON_ACTION result = COMMON_ACTION::SUCCESS)
     {
         if(inner)
         {

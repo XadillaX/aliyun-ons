@@ -1,7 +1,3 @@
-[submodule "src/third_party/sole"]
-path = src/third_party/sole
-url = https://github.com/r-lyeh/sole.git
-
 [submodule "src/third_party/lib"]
 path = src/third_party/lib
 url = https://git.coding.net/xadillax/ons-cpp-libs.git
