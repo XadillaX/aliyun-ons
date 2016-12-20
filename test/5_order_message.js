@@ -25,6 +25,8 @@ describe("#order message", function() {
         ack.done();
     });
 
+    this.timeout(0);
+
     it("should start an order producer", function(done) {
         producer.start(done);
     });
@@ -45,7 +47,6 @@ describe("#order message", function() {
     });
 
     it("should get two messages by order", function(done) {
-        this.timeout(0);
         function wait() {
             if(messages.length === 2) {
                 messages[0].body.should.equal("Aloha1");
