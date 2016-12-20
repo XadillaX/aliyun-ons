@@ -10,5 +10,5 @@ module.exports = {
     Consumer: require("./lib/consumer"),
     Producer: require("./lib/producer"),
 
-    OriginalLog: require("./lib/orig_log")
+    logger: require("./lib/logger")
 };
