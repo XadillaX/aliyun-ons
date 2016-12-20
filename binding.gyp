@@ -22,18 +22,14 @@
           "cflags_cc!": [ "-fno-exceptions", "-pthread", "-Wl,--no-as-needed", "-ldl" ],
           "cflags_cc": [ "-Wno-ignored-qualifiers" ],
           "cflags": [ "-std=c++11", "-stdlib=libc++" ],
-          "sources": [ "src/third_party/sole/sole.cpp" ],
           "include_dirs": [
-            "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1",
-            "src/third_party/sole"
+            "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1"
           ],
           "xcode_settings": {
             "GCC_ENABLE_CPP_EXCEPTIONS": "YES"
           }
         }],
         ["OS==\"linux\"", {
-          "sources": [ "src/third_party/sole/sole.cpp" ],
-          "include_dirs": [ "src/third_party/sole" ],
           "libraries": [
             "../src/third_party/lib/linux/libonsclient4cpp.a"
           ],
