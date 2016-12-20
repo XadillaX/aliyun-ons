@@ -15,13 +15,6 @@
  *
  * =====================================================================================
  */
-#ifndef WIN32
-#include <unistd.h>
-#include <sole.hpp>
-#else
-#include <io.h>
-#endif
-
 #include "log_util.h"
 #include "consumer.h"
 #include "consumer_ack.h"
@@ -85,6 +78,13 @@ ONSConsumerV8::ONSConsumerV8(
         // to fix https://github.com/XadillaX/aliyun-ons/issues/17
         factory_info.setFactoryProperty(
                 ONSFactoryProperty::ConsumeThreadNums, "1");
+    }
+
+    // log file
+    string log_filename = AliyunONS::GetLogPath();
+    if(log_filename.size())
+    {
+        factory_info.setFactoryProperty(ONSFactoryProperty::LogPath, log_filename.c_str());
     }
 
     if(consumer_env_v == "true")
@@ -189,23 +189,8 @@ NAN_METHOD(ONSConsumerV8::Prepare)
         return;
     }
 
-    bool need_get_log = false;
-    if(info.Length() > 1)
-    {
-        need_get_log = !info[1]->ToBoolean()->Value();
-    }
-
     ons->initializing = true;
-
-    int stdout_fd = 0;
-    string u4 = "";
-
-    if(need_get_log)
-    {
-        ONSStartRedirectStd(&stdout_fd, &u4);
-    }
-
-    AsyncQueueWorker(new ConsumerPrepareWorker(cb, *ons, u4, stdout_fd));
+    AsyncQueueWorker(new ConsumerPrepareWorker(cb, *ons));
 }
 
 NAN_METHOD(ONSConsumerV8::Listen)

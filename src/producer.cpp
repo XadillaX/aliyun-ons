@@ -15,13 +15,6 @@
  *
  * =====================================================================================
  */
-#ifndef WIN32
-#include <unistd.h>
-#include <sole.hpp>
-#else
-#include <io.h>
-#endif
-
 #include "log_util.h"
 #include "producer.h"
 #include "ONSClientException.h"
@@ -70,6 +63,13 @@ ONSProducerV8::ONSProducerV8(string _producer_id, string _access_key, string _se
     if(_options.order)
     {
         is_order = true;
+    }
+
+    // log file
+    string log_filename = AliyunONS::GetLogPath();
+    if(log_filename.size())
+    {
+        factory_info.setFactoryProperty(ONSFactoryProperty::LogPath, log_filename.c_str());
     }
 
     uv_mutex_init(&mutex);
@@ -150,23 +150,9 @@ NAN_METHOD(ONSProducerV8::Start)
         return;
     }
 
-    bool need_get_log = false;
-    if(info.Length() > 1)
-    {
-        need_get_log = !info[1]->ToBoolean()->Value();
-    }
-
-    int stdout_fd = 0;
-    string u4 = "";
-
-    if(need_get_log)
-    {
-        ONSStartRedirectStd(&stdout_fd, &u4);
-    }
-
     ons->initializing = true;
 
-    AsyncQueueWorker(new ProducerPrepareWorker(cb, *ons, ons->is_order, u4, stdout_fd));
+    AsyncQueueWorker(new ProducerPrepareWorker(cb, *ons, ons->is_order));
 }
 
 NAN_METHOD(ONSProducerV8::Stop)

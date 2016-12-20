@@ -17,17 +17,14 @@
  */
 #ifndef __CONSUMER_PREPARE_WORKER_H__
 #define __CONSUMER_PREPARE_WORKER_H__
-#include "../log_util.h"
 #include "../consumer.h"
 
 class ConsumerPrepareWorker : public Nan::AsyncWorker {
 public:
-    ConsumerPrepareWorker(Nan::Callback* callback, ONSConsumerV8& ons, string uuid, int stdout_fd) :
+    ConsumerPrepareWorker(Nan::Callback* callback, ONSConsumerV8& ons) :
         AsyncWorker(callback),
         ons(ons),
-        factory_info(ons.factory_info),
-        uuid(uuid),
-        stdout_fd(stdout_fd)
+        factory_info(ons.factory_info)
     {
     }
 
@@ -48,24 +45,16 @@ public:
     {
         Nan::HandleScope scope;
 
-        if(uuid != "")
-		{
-            ONSStartResumeStd(stdout_fd);
-        }
-
         ons.real_consumer = real_consumer;
         ons.initializing = false;
         ons.inited = true;
 
-        v8::Local<v8::Value> argv[2] = { Nan::Undefined(), Nan::New<v8::String>(uuid).ToLocalChecked() };
-        callback->Call(2, argv);
+        callback->Call(0, NULL);
     }
 
 private:
     ONSConsumerV8& ons;
     ONSFactoryProperty& factory_info;
     PushConsumer* real_consumer;
-    string uuid;
-    int stdout_fd;
 };
 #endif

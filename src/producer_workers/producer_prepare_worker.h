@@ -24,14 +24,12 @@ using namespace std;
 
 class ProducerPrepareWorker : public Nan::AsyncWorker {
 public:
-    ProducerPrepareWorker(Nan::Callback* callback, ONSProducerV8& ons, bool order, string u4, int _stdout_fd) :
+    ProducerPrepareWorker(Nan::Callback* callback, ONSProducerV8& ons, bool order) :
         AsyncWorker(callback),
         ons(ons),
         factory_info(ons.factory_info),
         is_order(order)
     {
-        uuid = u4;
-        stdout_fd = _stdout_fd;
     }
 
     ~ProducerPrepareWorker() {}
@@ -46,18 +44,12 @@ public:
     {
         Nan::HandleScope scope;
 
-        if(uuid != "")
-        {
-            ONSStartResumeStd(stdout_fd);
-        }
-
         ons.real_producer = real_producer;
         ons.initializing = false;
         ons.inited = true;
         ons.started = true;
 
-        v8::Local<v8::Value> argv[2] = { Nan::Undefined(), Nan::New<v8::String>(uuid).ToLocalChecked() };
-        callback->Call(2, argv);
+        callback->Call(0, NULL);
     }
 
 private:
@@ -65,8 +57,6 @@ private:
     ONSFactoryProperty& factory_info;
     ONSRealProducerWrapper* real_producer;
 
-    int stdout_fd;
-    string uuid;
     bool is_order;
 };
 #endif
