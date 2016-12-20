@@ -8,7 +8,7 @@
 
 var Consumer = require("../").Consumer;
 var Producer = require("../").Producer;
-var OriginalLog = require("../").OriginalLog;
+var logger = require("../").logger;
 
 var config = require("./config");
 
@@ -23,8 +23,6 @@ module.exports = {
     logs: []
 };
 
-if(process.platform !== "win32") {
-    OriginalLog.on("data", function(data) {
-        module.exports.logs.push(data);
-    });
-}
+logger.on("data", function(data) {
+    module.exports.logs.push(data);
+});
