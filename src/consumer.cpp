@@ -18,7 +18,7 @@
 #include "log_util.h"
 #include "consumer.h"
 #include "consumer_ack.h"
-#include "consumer_listener.h"
+#include "consumer_listener/base_listener.h"
 
 #include "consumer_workers/consumer_prepare_worker.h"
 #include "consumer_workers/consumer_stop_worker.h"
@@ -80,6 +80,11 @@ ONSConsumerV8::ONSConsumerV8(
                 ONSFactoryProperty::ConsumeThreadNums, "1");
     }
 
+    if(_options.order)
+    {
+        is_order = true;
+    }
+
     // log file
     string log_filename = AliyunONS::GetLogPath();
     if(log_filename.size())
@@ -95,19 +100,12 @@ ONSConsumerV8::ONSConsumerV8(
                 _options.send_msg_timeout_millis);
     }
 
-    listener = new ONSListenerV8(this);
+    listener = new ONSRealConsumerListenerWrapper(this, is_order);
 }
 
 ONSConsumerV8::~ONSConsumerV8()
 {
     Stop();
-
-    if(real_consumer) {
-        real_consumer = NULL;
-
-        // needn't to delete real_consumer
-        // refer to document: https://help.aliyun.com/document_detail/29559.html
-    }
 
     if(listener) {
         delete listener;
@@ -190,7 +188,7 @@ NAN_METHOD(ONSConsumerV8::Prepare)
     }
 
     ons->initializing = true;
-    AsyncQueueWorker(new ConsumerPrepareWorker(cb, *ons));
+    AsyncQueueWorker(new ConsumerPrepareWorker(cb, *ons, ons->is_order));
 }
 
 NAN_METHOD(ONSConsumerV8::Listen)
@@ -217,7 +215,7 @@ NAN_METHOD(ONSConsumerV8::Listen)
 
     ons->started = true;
 
-    ons->real_consumer->start();
+    ons->real_consumer->Start();
 }
 
 NAN_METHOD(ONSConsumerV8::Stop)
@@ -243,7 +241,7 @@ void ONSConsumerV8::HandleMessage(uv_async_t* handle)
 {
     Nan::HandleScope scope;
 
-    MessageHandlerParam* param = (MessageHandlerParam*)handle->data;
+    AliyunONS::MessageHandlerParam* param = (AliyunONS::MessageHandlerParam*)handle->data;
     Message* message = param->message;
 
     ONSConsumerV8* ons = param->ons;
@@ -300,11 +298,9 @@ void ONSConsumerV8::Stop()
 
     if(consumer_env_v == "true") printf("consumer stopping!\n");
 
-    real_consumer->shutdown();
+    real_consumer->Shutdown();
+    delete real_consumer;
     real_consumer = NULL;
-
-    // needn't to delete real_consumer
-    // refer to document: https://help.aliyun.com/document_detail/29559.html   
 
     if(consumer_env_v == "true") printf("consumer stopped!\n");
 

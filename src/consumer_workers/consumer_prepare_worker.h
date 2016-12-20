@@ -21,10 +21,11 @@
 
 class ConsumerPrepareWorker : public Nan::AsyncWorker {
 public:
-    ConsumerPrepareWorker(Nan::Callback* callback, ONSConsumerV8& ons) :
+    ConsumerPrepareWorker(Nan::Callback* callback, ONSConsumerV8& ons, bool order) :
         AsyncWorker(callback),
         ons(ons),
-        factory_info(ons.factory_info)
+        factory_info(ons.factory_info),
+        is_order(order)
     {
     }
 
@@ -32,13 +33,13 @@ public:
 
     void Execute()
     {
-        real_consumer = ONSFactory::getInstance()->createPushConsumer(factory_info);
+        real_consumer = new ONSRealConsumerWrapper(factory_info, is_order);
         
         // subscribe
-        real_consumer->subscribe(
+        real_consumer->Subscribe(
                 factory_info.getPublishTopics(),
                 ons.tag.c_str(),
-                ons.listener);
+                ons.listener->GetListener());
     }
 
     void HandleOKCallback()
@@ -55,6 +56,8 @@ public:
 private:
     ONSConsumerV8& ons;
     ONSFactoryProperty& factory_info;
-    PushConsumer* real_consumer;
+    ONSRealConsumerWrapper* real_consumer;
+
+    bool is_order;
 };
 #endif

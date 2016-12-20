@@ -71,6 +71,6 @@ NAN_METHOD(ONSConsumerACKV8::Done)
 
     // call v8 ack object's `Ack` function to emit the true `Acker`'s
     // `Ack` function and finish waiting of consume thread
-    Action act = succ ? Action::CommitMessage : Action::ReconsumeLater;
+    COMMON_ACTION act = succ ? COMMON_ACTION::SUCCESS : COMMON_ACTION::LATER;
     ack->Ack(act);
 }

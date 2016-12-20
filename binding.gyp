@@ -10,7 +10,12 @@
         "src/consumer.cpp",
         "src/producer.cpp",
         "src/real_producer_wrapper.cpp",
-        "src/consumer_listener.cpp"
+        "src/real_consumer_listener_wrapper.cpp",
+        "src/real_consumer_wrapper.cpp",
+
+        "src/consumer_listener/base_listener.cpp",
+        "src/consumer_listener/order_consumer_listener.cpp",
+        "src/consumer_listener/push_consumer_listener.cpp"
       ],
       "include_dirs": [
         "src/third_party/include",

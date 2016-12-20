@@ -78,14 +78,6 @@ ONSProducerV8::ONSProducerV8(string _producer_id, string _access_key, string _se
 ONSProducerV8::~ONSProducerV8()
 {
     Stop();
-
-    if(real_producer)
-    {
-        real_producer = NULL;
-
-        // needn't delete real_producer
-        // refer to document: https://help.aliyun.com/document_detail/29556.html
-    }
 }
 
 NAN_MODULE_INIT(ONSProducerV8::Init)
