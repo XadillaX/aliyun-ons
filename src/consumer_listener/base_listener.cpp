@@ -1,28 +1,35 @@
-/*
- * =====================================================================================
+/**
+ *            ___
+ *      |     | |
+ *     / \    | |
+ *    |--o|===|-|
+ *    |---|   |n|
+ *   /     \  |o|
+ *  | O     | |d|
+ *  | N     |=|e|
+ *  | S     | | |
+ *  |_______| |_|
+ *   |@| |@|  | |
+ * ___________|_|_
  *
- *       Filename:  consumer_listener.cpp
+ * AliyunONS - Node.js SDK for Aliyun ONS (based on RocketMQ)
  *
- *    Description:  Consumer listener class and function
+ * Copyright (c) 2016 XadillaX <i@2333.moe>
  *
- *        Version:  1.0
- *        Created:  2016/07/13 15时15分32秒
- *       Revision:  none
- *       Compiler:  g++
- *
- *         Author:  XadillaX (zkd), i@2333.moe
- *   Organization:  Design & Development Center, Souche Inc. CHINA
- *
- * =====================================================================================
+ * MIT LIcense <https://github.com/XadillaX/aliyun-ons/blob/master/LICENSE>
  */
-#include "consumer.h"
-#include "consumer_ack.h"
-#include "consumer_listener.h"
+#include <string>
+#include "base_listener.h"
+#include "../consumer.h"
+#include "../consumer_ack.h"
+
+namespace AliyunONS {
 
 std::string consumer_listener_env_v = std::getenv("NODE_ONS_LOG") == NULL ?
         "" : std::getenv("NODE_ONS_LOG");
 
-ONSListenerV8::ONSListenerV8(ONSConsumerV8* parent) : parent(parent)
+ONSConsumerBaseListener::ONSConsumerBaseListener(ONSConsumerV8* parent) :
+    parent(parent)
 {
     uv_mutex_init(&mutex);
 
@@ -41,7 +48,7 @@ ONSListenerV8::ONSListenerV8(ONSConsumerV8* parent) : parent(parent)
     }
 }
 
-ONSListenerV8::~ONSListenerV8()
+ONSConsumerBaseListener::~ONSConsumerBaseListener()
 {
     uv_mutex_lock(&mutex);
     while(!idle_async.empty())
@@ -59,7 +66,7 @@ ONSListenerV8::~ONSListenerV8()
     uv_mutex_destroy(&mutex);
 }
 
-uv_async_t* ONSListenerV8::GetAsync()
+uv_async_t* ONSConsumerBaseListener::GetAsync()
 {
     uv_async_t* async;
     uv_mutex_lock(&mutex);
@@ -78,14 +85,14 @@ uv_async_t* ONSListenerV8::GetAsync()
     return async;
 }
 
-void ONSListenerV8::RestoreAsync(uv_async_t* async)
+void ONSConsumerBaseListener::RestoreAsync(uv_async_t* async)
 {
     uv_mutex_lock(&mutex);
     idle_async.push(async);
     uv_mutex_unlock(&mutex);
 }
 
-Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
+COMMON_ACTION ONSConsumerBaseListener::Consume(Message& message)
 {
     const char* msg_id = message.getMsgID();
 
@@ -120,7 +127,7 @@ Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
             printf("[%s][---] message handler parameter deleted: 0x%lX\n", msg_id, (unsigned long)param);
         }
 
-        return Action::ReconsumeLater;
+        return COMMON_ACTION::LATER;
     }
 
     if(consumer_listener_env_v == "true")
@@ -131,7 +138,7 @@ Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
     async->data = (void*)param;
     uv_async_send(async);
 
-    Action result = ack_inner->WaitResult();
+    int result = ack_inner->WaitResult();
 
     async->data = NULL;
     param->ons = NULL;
@@ -152,5 +159,7 @@ Action ONSListenerV8::consume(Message& message, ConsumeContext& context)
     // restore `uv_async_t` object
     RestoreAsync(async);
 
-    return result;
+    return (COMMON_ACTION)result;
+}
+
 }
