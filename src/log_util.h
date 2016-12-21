@@ -1,19 +1,22 @@
-/*
- * =====================================================================================
+/**
+ *            ___
+ *      |     | |
+ *     / \    | |
+ *    |--o|===|-|
+ *    |---|   |n|
+ *   /     \  |o|
+ *  | O     | |d|
+ *  | N     |=|e|
+ *  | S     | | |
+ *  |_______| |_|
+ *   |@| |@|  | |
+ * ___________|_|_
  *
- *       Filename:  log_util.h
+ * AliyunONS - Node.js SDK for Aliyun ONS (based on RocketMQ)
  *
- *    Description:  log util header
+ * Copyright (c) 2016 XadillaX <i@2333.moe>
  *
- *        Version:  1.0
- *        Created:  2016/09/10 18时33分46秒
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  XadillaX (zkd), i@2333.moe
- *   Organization:  Design & Development Center, Souche Inc. CHINA
- *
- * =====================================================================================
+ * MIT LIcense <https://github.com/XadillaX/aliyun-ons/blob/master/LICENSE>
  */
 #ifndef __LOG_UTIL_H__
 #define __LOG_UTIL_H__

@@ -1,19 +1,22 @@
-/*
- * =====================================================================================
+/**
+ *            ___
+ *      |     | |
+ *     / \    | |
+ *    |--o|===|-|
+ *    |---|   |n|
+ *   /     \  |o|
+ *  | O     | |d|
+ *  | N     |=|e|
+ *  | S     | | |
+ *  |_______| |_|
+ *   |@| |@|  | |
+ * ___________|_|_
  *
- *       Filename:  entry.cpp
+ * AliyunONS - Node.js SDK for Aliyun ONS (based on RocketMQ)
  *
- *    Description:  Entry file for ONS Node client.
+ * Copyright (c) 2016 XadillaX <i@2333.moe>
  *
- *        Version:  1.0
- *        Created:  2015/12/18 15时35分58秒
- *       Revision:  none
- *       Compiler:  g++
- *
- *         Author:  XadillaX (ZKD), zhukaidi@souche.com
- *   Organization:  Design & Development Center, Souche Car Service Co., Ltd, HANGZHOU
- *
- * =====================================================================================
+ * MIT LIcense <https://github.com/XadillaX/aliyun-ons/blob/master/LICENSE>
  */
 #include <nan.h>
 #include "consumer.h"

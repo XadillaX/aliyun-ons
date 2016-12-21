@@ -138,7 +138,7 @@ COMMON_ACTION ONSConsumerBaseListener::Consume(Message& message)
     async->data = (void*)param;
     uv_async_send(async);
 
-    int result = ack_inner->WaitResult();
+    COMMON_ACTION result = ack_inner->WaitResult();
 
     async->data = NULL;
     param->ons = NULL;
@@ -159,7 +159,7 @@ COMMON_ACTION ONSConsumerBaseListener::Consume(Message& message)
     // restore `uv_async_t` object
     RestoreAsync(async);
 
-    return (COMMON_ACTION)result;
+    return result;
 }
 
 }

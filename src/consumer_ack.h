@@ -1,19 +1,22 @@
-/*
- * =====================================================================================
+/**
+ *            ___
+ *      |     | |
+ *     / \    | |
+ *    |--o|===|-|
+ *    |---|   |n|
+ *   /     \  |o|
+ *  | O     | |d|
+ *  | N     |=|e|
+ *  | S     | | |
+ *  |_______| |_|
+ *   |@| |@|  | |
+ * ___________|_|_
  *
- *       Filename:  consumer_ack.h
+ * AliyunONS - Node.js SDK for Aliyun ONS (based on RocketMQ)
  *
- *    Description:  ONS consumer ACK wrapper for node.js
+ * Copyright (c) 2016 XadillaX <i@2333.moe>
  *
- *        Version:  1.0
- *        Created:  2016/01/25 11时16分17秒
- *       Revision:  none
- *       Compiler:  g++
- *
- *         Author:  XadillaX (ZKD), zhukaidi@souche.com
- *   Organization:  Design & Development Center, Souche Car Service Co., Ltd, HANGZHOU
- *
- * =====================================================================================
+ * MIT LIcense <https://github.com/XadillaX/aliyun-ons/blob/master/LICENSE>
  */
 #ifndef __ONS_CONSUMER_ACK_H__
 #define __ONS_CONSUMER_ACK_H__
@@ -76,7 +79,7 @@ public:
         uv_mutex_unlock(&mutex);
     }
 
-    int WaitResult()
+    COMMON_ACTION WaitResult()
     { 
         uv_mutex_lock(&mutex);
 

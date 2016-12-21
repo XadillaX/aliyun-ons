@@ -1,19 +1,22 @@
-/*
- * =====================================================================================
+/**
+ *            ___
+ *      |     | |
+ *     / \    | |
+ *    |--o|===|-|
+ *    |---|   |n|
+ *   /     \  |o|
+ *  | O     | |d|
+ *  | N     |=|e|
+ *  | S     | | |
+ *  |_______| |_|
+ *   |@| |@|  | |
+ * ___________|_|_
  *
- *       Filename:  consumer_ack.cpp
+ * AliyunONS - Node.js SDK for Aliyun ONS (based on RocketMQ)
  *
- *    Description:  ONS consumer ACK wrapper for node.js
+ * Copyright (c) 2016 XadillaX <i@2333.moe>
  *
- *        Version:  1.0
- *        Created:  2016/01/25 11时37分20秒
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  XadillaX (ZKD), zhukaidi@souche.com
- *   Organization:  Design & Development Center, Souche Car Service Co., Ltd, HANGZHOU
- *
- * =====================================================================================
+ * MIT LIcense <https://github.com/XadillaX/aliyun-ons/blob/master/LICENSE>
  */
 #include "consumer_ack.h"
 
