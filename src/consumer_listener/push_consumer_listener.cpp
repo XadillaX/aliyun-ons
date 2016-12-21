@@ -1,19 +1,22 @@
-/*
- * =====================================================================================
+/**
+ *            ___
+ *      |     | |
+ *     / \    | |
+ *    |--o|===|-|
+ *    |---|   |n|
+ *   /     \  |o|
+ *  | O     | |d|
+ *  | N     |=|e|
+ *  | S     | | |
+ *  |_______| |_|
+ *   |@| |@|  | |
+ * ___________|_|_
  *
- *       Filename:  consumer_listener.cpp
+ * AliyunONS - Node.js SDK for Aliyun ONS (based on RocketMQ)
  *
- *    Description:  Consumer listener class and function
+ * Copyright (c) 2016 XadillaX <i@2333.moe>
  *
- *        Version:  1.0
- *        Created:  2016/07/13 15时15分32秒
- *       Revision:  none
- *       Compiler:  g++
- *
- *         Author:  XadillaX (zkd), i@2333.moe
- *   Organization:  Design & Development Center, Souche Inc. CHINA
- *
- * =====================================================================================
+ * MIT LIcense <https://github.com/XadillaX/aliyun-ons/blob/master/LICENSE>
  */
 #include "push_consumer_listener.h"
 
@@ -28,5 +31,7 @@ ONSPushConsumerListener::~ONSPushConsumerListener()
 
 Action ONSPushConsumerListener::consume(Message& message, ConsumeContext& context)
 {
-    return (Action)ONSConsumerBaseListener::Consume(message);
+    return ONSConsumerBaseListener::Consume(message) == COMMON_ACTION::SUCCESS ?
+        Action::CommitMessage :
+        Action::ReconsumeLater;
 }

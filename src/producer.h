@@ -1,19 +1,22 @@
-/*
- * =====================================================================================
+/**
+ *            ___
+ *      |     | |
+ *     / \    | |
+ *    |--o|===|-|
+ *    |---|   |n|
+ *   /     \  |o|
+ *  | O     | |d|
+ *  | N     |=|e|
+ *  | S     | | |
+ *  |_______| |_|
+ *   |@| |@|  | |
+ * ___________|_|_
  *
- *       Filename:  producer.h
+ * AliyunONS - Node.js SDK for Aliyun ONS (based on RocketMQ)
  *
- *    Description:  ONS producer wrapper for node.js
+ * Copyright (c) 2016 XadillaX <i@2333.moe>
  *
- *        Version:  1.0
- *        Created:  2015/12/19 22时20分48秒
- *       Revision:  none
- *       Compiler:  g++
- *
- *         Author:  XadillaX (ZKD), zhukaidi@souche.com
- *   Organization:  Design & Development Center, Souche Car Service Co., Ltd, HANGZHOU
- *
- * =====================================================================================
+ * MIT LIcense <https://github.com/XadillaX/aliyun-ons/blob/master/LICENSE>
  */
 #ifndef __ONS_PRODUCER_H__
 #define __ONS_PRODUCER_H__

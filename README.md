@@ -19,7 +19,7 @@ SDK of Node.js for Aliyun ONS.
 $ npm install --save ons
 ```
 
-> **NOTE:** Because of Aliyun ONS C++ SDK's closed source, it only provides Linux and Windows library file (libonsclient4cpp.a, ONSClientCPP.lib). So you can only install this package under Linux and Windows so far.
+> **NOTE:** Because of Aliyun ONS C++ SDK's closed source, it only provides Linux and Windows library file (libonsclient4cpp.a, ONSClientCPP.lib). So you can only install this package under Linux and Windows 64x so far.
 >
 > **If you need to develop under OSX, please run a vagrant or a docker.**
 
@@ -58,6 +58,7 @@ var consumer = new Consumer(CUSTOMER_ID, TOPIC, TAGS, ACCESS_KEY, SECRET_KEY, OP
 > + **namesrvAddr:** the ONS server address
 > + **onsAddr:** an address to fetch ONS server address
 > + **threadNum:** worker thread count
+> + **order:** `true` if you want it be `OrderConsumer`
 
 Next step you should set one or more message receive function to that consumer.
 
@@ -127,6 +128,7 @@ var producer = new Producer(PRODUCER_ID, ACCESS_KEY, SECRET_KEY, OPTIONS);
 > + **namesrvAddr:** the ONS server address
 > + **onsAddr:** an address to fetch ONS server address
 > + **sendTimeout:** timeout for sending a message
+> + **order:** `true` if you want it be `OrderProducer`
 
 After creating a producer, you should start it.
 
@@ -140,16 +142,22 @@ producer.start(function(err) {
 Now you can send message(s)!
 
 ```javascript
-producer.send(KEY, TOPIC, TAGS, CONTENT, DELAY, function(err, messageId) {
+producer.send([KEY,] TOPIC, TAGS, CONTENT, [DELAY,] [SHARDING_KEY,] function(err, messageId) {
     console.log(arguments);
 });
 
-// or key / delay (ms) is an optional parameter
+// or key / shardingKey / delay (ms) / callback are optional parameter
 
 producer.send(TOPIC, TAGS, CONTENT, function(err, messageId) {
     console.log(arguments);
 });
 ```
+
+> **NOTICE 1:** `SHARDING_KEY` is only for `OrderProducer`, each message in same `SHARDING_KEY` will send one by one in
+> order and `OrderConsumer` will receive messages in same `SHARDING_KEY` one by one in order.
+>
+> **NOTICE 2:** `callback` is optional when it's not `OrderProducer`. If no `callback` passed, message will be sent in
+> `oneway` method.
 
 That's easy! And what's more, you can stop it when you want.
 
@@ -175,36 +183,31 @@ producer.stop(function() {
 
 > **This feature is available under Linux so far.**
 
-By default C++ ONS SDK will generate a log file under `/home/YOUR_USER_NAME/logs/metaq-client4cpp/`. So we create a
-tail stream to watch it.
+By default C++ ONS SDK will generate a log file. So we create a tail stream to watch it.
 
 ```javascript
-const log = require("ons").OriginalLog;
-log.on("data", function(data) {
+const logger = require("ons").logger;
+logger.on("data", function(data) {
     console.log("[ORIG LOG]", data);
 });
 
 // [ORIG LOG] ... register sendMessageHook success,hookname is OnsSendMessageHook ...
 // ...
-// [ORIG LOG] ... egister consumeMessageHook success,hookname is OnsConsumerMessageHook ...
+// [ORIG LOG] ... register consumeMessageHook success,hookname is OnsConsumerMessageHook ...
 // ...
-// [ORIG LOG] ... hutdown producerl successfully ...
+// [ORIG LOG] ... shutdown producerl successfully ...
 // ...
-// [ORIG LOG] ... hutdown pushConsumer successfully ...
+// [ORIG LOG] ... shutdown pushConsumer successfully ...
 // ...
 ```
 
-> **HINT:** C++ ONS SDK will create only one log file per process, so `OriginalLog` is a singleton.
+> **NOTICE:** C++ ONS SDK will create only one log file per process, so `logger` is a singleton.
 
-## About Memory
+## C++ SDK Changelog
 
-If your ONS queue has stored a large crowd of messages on server, your local program memory will boom to very large to pull almostly all messages on server.
+Here's [original C++ ONS SDK changelog](src/third_party/CHANGELOG.md).
 
-> C++ ONS SDK starts an additional thread to pull messages all the time from to local program and wait for consume thread to consume.
->
-> — Technical Support of Aliyun ONS
-
-You may refer to [#9](https://github.com/XadillaX/aliyun-ons/pull/9) and [#8 (comment)](https://github.com/XadillaX/aliyun-ons/issues/8#issuecomment-233607029).
+> **NOTICE:** It's only the changelog for the original C++ SDK. Node.js SDK may not use all new features of original SDK.
 
 ## Contribute
 

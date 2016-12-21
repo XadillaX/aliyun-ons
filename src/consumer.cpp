@@ -1,19 +1,22 @@
-/*
- * =====================================================================================
+/**
+ *            ___
+ *      |     | |
+ *     / \    | |
+ *    |--o|===|-|
+ *    |---|   |n|
+ *   /     \  |o|
+ *  | O     | |d|
+ *  | N     |=|e|
+ *  | S     | | |
+ *  |_______| |_|
+ *   |@| |@|  | |
+ * ___________|_|_
  *
- *       Filename:  consumer.cpp
+ * AliyunONS - Node.js SDK for Aliyun ONS (based on RocketMQ)
  *
- *    Description:  ONS consumer wrapper for node.js
+ * Copyright (c) 2016 XadillaX <i@2333.moe>
  *
- *        Version:  1.0
- *        Created:  2015/12/18 13时23分04秒
- *       Revision:  none
- *       Compiler:  g++
- *
- *         Author:  XadillaX (ZKD), zhukaidi@souche.com
- *   Organization:  Design & Development Center, Souche Car Service Co., Ltd, HANGZHOU
- *
- * =====================================================================================
+ * MIT LIcense <https://github.com/XadillaX/aliyun-ons/blob/master/LICENSE>
  */
 #include "log_util.h"
 #include "consumer.h"
@@ -40,6 +43,7 @@ ONSConsumerV8::ONSConsumerV8(
     tag(_tag),
     access_key(_access_key),
     secret_key(_secret_key),
+    is_order(false),
 
     initializing(false),
     inited(false),
@@ -48,8 +52,7 @@ ONSConsumerV8::ONSConsumerV8(
     real_consumer(NULL),
     listener(NULL),
 
-    listener_func(),
-    is_order(false)
+    listener_func()
 {
     Nan::HandleScope scope;
 

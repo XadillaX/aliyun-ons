@@ -31,5 +31,7 @@ ONSOrderConsumerListener::~ONSOrderConsumerListener()
 
 OrderAction ONSOrderConsumerListener::consume(Message& message, ConsumeOrderContext& context)
 {
-    return (OrderAction)ONSConsumerBaseListener::Consume(message);
+    return ONSConsumerBaseListener::Consume(message) == COMMON_ACTION::SUCCESS ?
+        OrderAction::Success :
+        OrderAction::Suspend;
 }

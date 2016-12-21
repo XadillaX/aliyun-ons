@@ -15,7 +15,7 @@
 $ npm install --save ons
 ```
 
-> **注意:** 因为阿里云 ONS 的官方 C++ SDK 是闭源的，且只提供了 Linux 和 Windows 下的链接库（libonsclient4cpp.a，ONSClientCPP.lib），所以该包目前为止只支持在 Linux 和 Windows 下安装。
+> **注意:** 因为阿里云 ONS 的官方 C++ SDK 是闭源的，且只提供了 Linux 和 Windows 下的链接库（libonsclient4cpp.a，ONSClientCPP.lib），所以该包目前为止只支持在 Linux 和 64 位 Windows 下安装。
 >
 > 如需开发环境，OSX 用户请移步 Linux 或者启动一个 Vagrant、Docker 等。
 >
@@ -56,6 +56,7 @@ var consumer = new Consumer(CUSTOMER_ID, TOPIC, TAGS, ACCESS_KEY, SECRET_KEY, OP
 > + **namesrvAddr**：ONS 服务器地址
 > + **onsAddr**：用于寻找 ONS 服务器地址
 > + **threadNum**：工作线程数
+> + **order:** 是否以 `OrderConsumer` 创建
 
 然后创建一个获取消息的事件监听。
 
@@ -128,6 +129,7 @@ var producer = new Producer(PRODUCER_ID, ACCESS_KEY, SECRET_KEY);
 > + **namesrvAddr**：ONS 服务器地址
 > + **onsAddr**：用于寻找 ONS 服务器地址
 > + **sendTimeout**：发送超时时间
+> + **order**：是否以 `OrderProducer` 模式创建
 
 创建完毕之后需要启动它才能发消息。
 
@@ -141,17 +143,24 @@ producer.start(function(err) {
 然后你就可以通过 `send` 函数来发消息了。
 
 ```javascript
-producer.send(KEY, TOPIC, TAGS, CONTENT, DELAY, function(err, messageId) {
+producer.send([KEY,] TOPIC, TAGS, CONTENT, [SHARDING_KEY,] [DELAY,] function(err, messageId) {
     console.log(arguments);
 });
 
 // `KEY` 参数并不是必选的，所以也可以如下调用
+// `SHARDING_KEY` 在非 `OrderProducer` 不需要传，在 `OrderProducer` 模式下必传
 // `DELAY` 延时参数也是可选的，默认不传为立即发送，否则会发一个指定毫秒延时的消息
 
 producer.send(TOPIC, TAGS, CONTENT, function(err, messageId) {
     console.log(arguments);
 });
 ```
+
+> **注意壹：**`SHARDING_KEY` 仅在 `OrderProducer` 模式必传，否则不需要传。在 `OrderProducer` 模式下，同 `SHARDING_KEY`
+> 的消息会顺序发送，不同 `SHARDING_KEY` 之间消息不能保证顺序。在 `OrderConsumer` 接受消息时，同 `SHARDING_KEY`
+> 的消息会顺序接受，不同 `SHARDING_KEY` 之间消息不能保证顺序。
+>
+> **注意贰：**`callback` 在非 `OrderProducer` 模式下可选，若不传 `callback` 则该 `Producer` 将会以 **Oneway** 形式发送。
 
 当然，你也可以在你想要的时候停止它。
 
@@ -177,37 +186,31 @@ producer.stop(function() {
 
 > **该特性目前只在 Linux 下实现。**
 
-C++ ONS SDK 会在 `/home/YOUR_USER_NAME/logs/metaq-client4cpp/` 目录下生成它的源日志，所以我们创建了一个 `tail stream`
-来监视它。
+C++ ONS SDK 会生成它的源日志，所以我们创建了一个 `tail stream` 来监控它。
 
 ```javascript
-const log = require("ons").OriginalLog;
-log.on("data", function(data) {
+const logger = require("ons").logger;
+logger.on("data", function(data) {
     console.log("[ORIG LOG]", data);
 });
 
 // [ORIG LOG] ... register sendMessageHook success,hookname is OnsSendMessageHook ...
 // ...
-// [ORIG LOG] ... egister consumeMessageHook success,hookname is OnsConsumerMessageHook ...
+// [ORIG LOG] ... register consumeMessageHook success,hookname is OnsConsumerMessageHook ...
 // ...
-// [ORIG LOG] ... hutdown producerl successfully ...
+// [ORIG LOG] ... shutdown producerl successfully ...
 // ...
-// [ORIG LOG] ... hutdown pushConsumer successfully ...
+// [ORIG LOG] ... shutdown pushConsumer successfully ...
 // ...
 ```
 
-> **提示：**C++ ONS SDK 在一个进程中只会创建一个日志文件，所以 `OriginalLog` 是一个单件（Singleton）。
+> **提示：**C++ ONS SDK 在一个进程中只会创建一个日志文件，所以 `logger` 是一个单件（Singleton）。
 
+## C++ SDK 更改日志
 
-## 关于内存
+这里是 [ONS 原始 C++ SDK 更改日志](src/third_party/CHANGELOG.md)。
 
-如果你的 ONS 队列堆积了一大堆消息在服务器，那么你的本地程序就会因不断去服务器拉消息而内存暴涨。
-
-> C++ ONS SDK 会启动一个额外的线程，无论本地是否来得及消费，都不断从服务器拉去消息放到本地内存去等待其它线程消费。
->
-> ——阿里云技术支持
-
-你可以参考 [#9](https://github.com/XadillaX/aliyun-ons/pull/9) 以及 [#8 (comment)](https://github.com/XadillaX/aliyun-ons/issues/8#issuecomment-233607029)。
+> **注意：**这只是原始 C++ SDK 的更改日志，Node.js SDK 不一定用到所有的新特性。
 
 ## 贡献
 
