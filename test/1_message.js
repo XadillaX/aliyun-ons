@@ -54,7 +54,7 @@ describe("#message", function() {
 
     describe("#oneway", function() {
         it("should send oneway message", function() {
-            producer.send(config.topic, "tagA", "ONEWAY!");
+            producer.send(config.topic, "tagA", "单向!");
         });
 
         it("should get oneway message", function(done) {
@@ -65,7 +65,7 @@ describe("#message", function() {
                 message.tag.should.be.eql("tagA");
                 message.key.should.be.eql("");
                 message.msgId.should.match(/^[0-9A-Z]{32}$/);
-                message.body.should.be.eql("ONEWAY!");
+                message.body.should.be.eql("单向!");
                 message.reconsumeTimes.should.be.eql(0);
                 message.startDeliverTime.should.be.eql(0);
 
