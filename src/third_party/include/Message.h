@@ -23,6 +23,7 @@ class  ONSCLIENT_API Message {
  public:
   Message();
   Message(const char* topic, const char* tags, const char* body);
+	// Message(const char* topci, size_t topic_size, const char* tags, size_t tags_size, const char* body, size_t body_size);
   Message(const char* topic, const char* tags, const char* keys,
 		const char* body);
 

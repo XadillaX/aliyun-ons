@@ -1,3 +1,9 @@
+## v1.0.9 - 2016/12/29
+
+1. feat: using UTF-8;
+2. feat: customize log path;
+3. fix: coredump while exiting order producer;
+
 ## v1.0.8 - 2016/12/02
 
 1. feat: add **oneway** sending method;
