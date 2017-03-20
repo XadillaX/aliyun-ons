@@ -142,7 +142,7 @@ producer.start(function(err) {
 Now you can send message(s)!
 
 ```javascript
-producer.send([KEY,] TOPIC, TAGS, CONTENT, [DELAY,] [SHARDING_KEY,] function(err, messageId) {
+producer.send([KEY,] TOPIC, TAGS, CONTENT, [SHARDING_KEY,] [DELAY,] function(err, messageId) {
     console.log(arguments);
 });
 
