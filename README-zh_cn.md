@@ -11,9 +11,15 @@
 
 ## 安装
 
+运行：
 ```sh
 $ npm install --save ons
 ```
+如果你是用root用户登录linux系统，运行
+```sh
+$ npm install --save ons --unsafe-perm
+```
+
 
 > **注意:** 因为阿里云 ONS 的官方 C++ SDK 是闭源的，且只提供了 Linux 和 Windows 下的链接库（libonsclient4cpp.a，ONSClientCPP.lib），所以该包目前为止只支持在 Linux 和 64 位 Windows 下安装。
 >
