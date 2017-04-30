@@ -15,9 +15,16 @@ SDK of Node.js for Aliyun ONS.
 
 ## Installation
 
+Default ,run
 ```sh
 $ npm install --save ons
 ```
+If you login with root, run
+```sh
+$ npm install --save ons
+```
+
+
 
 > **NOTE:** Because of Aliyun ONS C++ SDK's closed source, it only provides Linux and Windows library file (libonsclient4cpp.a, ONSClientCPP.lib). So you can only install this package under Linux and Windows 64x so far.
 >
