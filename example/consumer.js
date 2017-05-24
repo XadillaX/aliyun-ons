@@ -31,6 +31,10 @@ consumer.on("message", function(message, ack) {
     ack.done();
 });
 
+consumer.on("error", function(err) {
+    console.log(err);
+});
+
 console.log("Connecting to Aliyun ONS...");
 consumer.init(function() {
     console.log("Initialized.");

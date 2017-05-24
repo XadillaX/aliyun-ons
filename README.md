@@ -21,7 +21,7 @@ $ npm install --save ons
 
 > **NOTE:** Because of Aliyun ONS C++ SDK's closed source, it only provides Linux and Windows library file (libonsclient4cpp.a, ONSClientCPP.lib). So you can only install this package under Linux and Windows 64x so far.
 >
-> **If you need to develop under OSX, please run a vagrant or a docker.**
+> **Current 4.x version of ons supports OSX via incomplete HTTP protocol. Not recommended for stable use.**
 
 ## Usage
 
@@ -59,6 +59,10 @@ var consumer = new Consumer(CUSTOMER_ID, TOPIC, TAGS, ACCESS_KEY, SECRET_KEY, OP
 > + **onsAddr:** an address to fetch ONS server address
 > + **threadNum:** worker thread count
 > + **order:** `true` if you want it be `OrderConsumer`
+> + **httpDomain:** OSX only, refer to https://help.aliyun.com/document_detail/29574.html
+>
+> > OSX only supports `threadNum` and `httpDomain` options. And `TAGS` parameter in constructor will be useless under
+> > OSX.
 
 Next step you should set one or more message receive function to that consumer.
 
@@ -103,6 +107,7 @@ consumer.stop(function() {
 >     });
 > });
 > ```
+>
 > You should write down your exit code in your own scene.
 
 ### Producer
@@ -129,6 +134,9 @@ var producer = new Producer(PRODUCER_ID, ACCESS_KEY, SECRET_KEY, OPTIONS);
 > + **onsAddr:** an address to fetch ONS server address
 > + **sendTimeout:** timeout for sending a message
 > + **order:** `true` if you want it be `OrderProducer`
+> + **httpDomain:** OSX only, refer to https://help.aliyun.com/document_detail/29574.html
+>
+> > OSX only supports `order` and `httpDomain` options.
 
 After creating a producer, you should start it.
 
@@ -201,7 +209,8 @@ logger.on("data", function(data) {
 // ...
 ```
 
-> **NOTICE:** C++ ONS SDK will create only one log file per process, so `logger` is a singleton.
+> **NOTICE 1:** C++ ONS SDK will create only one log file per process, so `logger` is a singleton.
+> **NOTICE 2:** Don't use under OSX!
 
 ## C++ SDK Changelog
 

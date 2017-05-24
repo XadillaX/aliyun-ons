@@ -17,8 +17,7 @@ $ npm install --save ons
 
 > **注意:** 因为阿里云 ONS 的官方 C++ SDK 是闭源的，且只提供了 Linux 和 Windows 下的链接库（libonsclient4cpp.a，ONSClientCPP.lib），所以该包目前为止只支持在 Linux 和 64 位 Windows 下安装。
 >
-> 如需开发环境，OSX 用户请移步 Linux 或者启动一个 Vagrant、Docker 等。
->
+> 4.x 版本以后支持 OSX 使用——通过不完整的 HTTP 协议。不推荐上线使用，仅供开发测试。
 
 
 ## 使用方法
@@ -56,7 +55,10 @@ var consumer = new Consumer(CUSTOMER_ID, TOPIC, TAGS, ACCESS_KEY, SECRET_KEY, OP
 > + **namesrvAddr**：ONS 服务器地址
 > + **onsAddr**：用于寻找 ONS 服务器地址
 > + **threadNum**：工作线程数
-> + **order:** 是否以 `OrderConsumer` 创建
+> + **order**：是否以 `OrderConsumer` 创建
+> + **httpDomain**：OSX 专用，请求域名，参考 https://help.aliyun.com/document_detail/29574.html
+>
+> > OSX 只支持 `threadNum` 和 `httpDomain` 两个参数。以及在构造函数内的 `TAG` 参数在 OSX 下将会失效。
 
 然后创建一个获取消息的事件监听。
 
@@ -130,6 +132,9 @@ var producer = new Producer(PRODUCER_ID, ACCESS_KEY, SECRET_KEY);
 > + **onsAddr**：用于寻找 ONS 服务器地址
 > + **sendTimeout**：发送超时时间
 > + **order**：是否以 `OrderProducer` 模式创建
+> + **httpDomain**：OSX 专用，请求域名，参考 https://help.aliyun.com/document_detail/29574.html
+>
+> > OSX 只支持 `order` 和 `httpDomain` 两个参数。
 
 创建完毕之后需要启动它才能发消息。
 
