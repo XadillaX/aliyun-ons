@@ -1,6 +1,6 @@
 {
   "name": "ons",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "SDK of Node.js for Aliyun ONS (Aliyun Open Notification Service).",
   "main": "index.js",
   "scripts": {
@@ -49,7 +49,6 @@
   },
   "devDependencies": {
     "mocha": "^3.3.0",
-    "scarlet-task": "^1.0.0",
     "should": "^11.2.1"
   }
 }
