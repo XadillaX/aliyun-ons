@@ -104,7 +104,7 @@ NAN_METHOD(ONSProducerV8::New)
         const int argc = 4;
         v8::Local<v8::Value> argv[argc] = { info[0], info[1], info[2], info[3] };
         v8::Local<v8::Function> cons = Nan::New<v8::Function>(constructor);
-        info.GetReturnValue().Set(cons->NewInstance(argc, argv));
+        info.GetReturnValue().Set(Nan::NewInstance(cons, argc, argv).ToLocalChecked());
         return;
     }
 

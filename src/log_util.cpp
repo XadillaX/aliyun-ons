@@ -32,7 +32,7 @@ NAN_METHOD(SetLogPath)
         return Nan::ThrowError("You should specified a log path.");
     }
 
-    v8::String::Utf8Value path(info[0]->ToString());
+    v8::String::Utf8Value path(Nan::To<v8::String>(info[0]).ToLocalChecked());
     log_path = *path;
 }
 
