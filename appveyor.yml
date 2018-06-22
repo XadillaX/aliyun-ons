@@ -2,7 +2,7 @@ platform: x64
 os: Visual Studio 2015
 install:
   - git submodule update --init --recursive
-  - ps: Install-Product node 4 x64
+  - ps: Install-Product node 6 x64
   - npm -g install npm@next
   - npm install
 
