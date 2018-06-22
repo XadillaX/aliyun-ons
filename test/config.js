@@ -1,10 +1,21 @@
 /**
  * XadillaX created at 2016-06-06 20:19:05 With ♥
  *
- * Copyright (c) 2017 Souche.com, all rights
+ * Copyright (c) 2018 xcoder.in, all rights
  * reserved.
  */
 "use strict";
+
+/**
+ * CI Memo:
+ *
+ * + Topic: ons_subscriber_test
+ * + Topic 4 Windows: ons_subscriber_test_windows
+ * + Producer ID: PID_my_producer_test
+ * + Consumer ID: CID_my_consumer_test
+ *
+ * Remember deleting all resource after CI finished.
+ */
 
 try {
     module.exports = require("./_config");

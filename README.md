@@ -21,7 +21,7 @@ $ npm install --save ons
 
 > **NOTE:** Because of Aliyun ONS C++ SDK's closed source, it only provides Linux and Windows library file (libonsclient4cpp.a, ONSClientCPP.lib). So you can only install this package under Linux and Windows 64x so far.
 >
-> **Current 4.x version of ons supports OSX via incomplete HTTP protocol. Not recommended for stable use.**
+> **I removed HTTP protocol because of official removing of HTTP service.**
 
 ## Usage
 

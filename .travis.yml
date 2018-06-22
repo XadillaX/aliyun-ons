@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "4"
+  - "10"
 install:
   - export CXX="g++-4.8" CXX="gcc-4.8"
   - export NODE_ONS_LOG=true

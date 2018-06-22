@@ -14,7 +14,7 @@
  *
  * AliyunONS - Node.js SDK for Aliyun ONS (based on RocketMQ)
  *
- * Copyright (c) 2017 XadillaX <i@2333.moe>
+ * Copyright (c) 2018 XadillaX <i@2333.moe>
  *
  * MIT LIcense <https://github.com/XadillaX/aliyun-ons/blob/master/LICENSE>
  */
@@ -32,7 +32,7 @@ NAN_METHOD(SetLogPath)
         return Nan::ThrowError("You should specified a log path.");
     }
 
-    v8::String::Utf8Value path(info[0]->ToString());
+    v8::String::Utf8Value path(Nan::To<v8::String>(info[0]).ToLocalChecked());
     log_path = *path;
 }
 

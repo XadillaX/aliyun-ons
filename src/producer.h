@@ -14,7 +14,7 @@
  *
  * AliyunONS - Node.js SDK for Aliyun ONS (based on RocketMQ)
  *
- * Copyright (c) 2017 XadillaX <i@2333.moe>
+ * Copyright (c) 2018 XadillaX <i@2333.moe>
  *
  * MIT LIcense <https://github.com/XadillaX/aliyun-ons/blob/master/LICENSE>
  */

@@ -1,7 +1,7 @@
 /**
  * XadillaX created at 2016-07-26 20:08:54 With ♥
  *
- * Copyright (c) 2017 Souche.com, all rights
+ * Copyright (c) 2018 xcoder.in, all rights
  * reserved.
  */
 "use strict";

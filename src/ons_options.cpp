@@ -14,7 +14,7 @@
  *
  * AliyunONS - Node.js SDK for Aliyun ONS (based on RocketMQ)
  *
- * Copyright (c) 2017 XadillaX <i@2333.moe>
+ * Copyright (c) 2018 XadillaX <i@2333.moe>
  *
  * MIT LIcense <https://github.com/XadillaX/aliyun-ons/blob/master/LICENSE>
  */
@@ -51,12 +51,12 @@ ONSOptions::ONSOptions(v8::Local<v8::Value> value) : ONSOptions()
 
         if(v8_thread_num->IsInt32())
         {
-            thread_num = v8_thread_num->ToInt32()->Value();
+            thread_num = Nan::To<int32_t>(v8_thread_num).FromJust();
         }
 
         if(v8_send_msg_timeout_millis->IsInt32())
         {
-            send_msg_timeout_millis = v8_send_msg_timeout_millis->ToInt32()->Value();
+            send_msg_timeout_millis = Nan::To<int32_t>(v8_send_msg_timeout_millis).FromJust();
         }
 
         if(v8_ons_addr->IsString())
@@ -69,6 +69,6 @@ ONSOptions::ONSOptions(v8::Local<v8::Value> value) : ONSOptions()
             namesrv_addr = *(v8::String::Utf8Value(v8_namesrv_addr));
         }
 
-        order = v8_order->ToBoolean()->IsTrue();
+        order = Nan::To<bool>(v8_order).FromJust();
     }
 }
