@@ -17,7 +17,7 @@ $ npm install --save ons
 
 > **注意:** 因为阿里云 ONS 的官方 C++ SDK 是闭源的，且只提供了 Linux 和 Windows 下的链接库（libonsclient4cpp.a，ONSClientCPP.lib），所以该包目前为止只支持在 Linux 和 64 位 Windows 下安装。
 >
-> 4.x 版本以后支持 OSX 使用——通过不完整的 HTTP 协议。不推荐上线使用，仅供开发测试。
+> **由于官方下架，我移除了对 HTTP 协议的支持。**
 
 
 ## 使用方法
